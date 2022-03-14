@@ -103,11 +103,11 @@
                                         <select class="form-control" id="frequency">
                                             <option value="0">--Select One</option>
                                             <?php
-                                            $recs = fetchtable('tbl_frequencies', "id > 0 AND status > 0", "id", "asc", "60", "id ,value");
+                                            $recs = fetchtable('tbl_frequencies', "status > 0", "id", "asc", "62", "id ,value");
                                             while ($r = mysqli_fetch_array($recs)) {
                                                 $id = $r['id'];
                                                 $frequency = $r['value'];
-                                                if ($id ==  $service['unit']) {
+                                                if ($frequency ==  $service['frequency']) {
                                                     $g_selected = 'SELECTED';
                                                 } else {
                                                     $g_selected = "";
