@@ -30,7 +30,7 @@
               <i class="nav-icon fa fa-th"></i>
               <p>
                 Services
-                <span class="badge badge-info right pl-0"><span class="pr-1" id="services_total"></span></span>
+                <span class="badge badge-info right pl-0"><span class="pr-1" id="services_total">2</span></span>
               </p>
             </a>
           </li>
