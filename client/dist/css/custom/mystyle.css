@@ -1,0 +1,32 @@
+.box{
+   background-color: white !important;
+   margin-left: 20px;
+   margin-right: 20px;
+   box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 5px;
+   border-radius: 5px !important;
+   margin-bottom: 50px !important;
+}
+
+.card-header{
+    background-color: #e3f2fd !important;
+    border-top: 4px solid silver;
+}
+
+small{
+    font-size: 10px;   
+}
+
+.aco{
+    color: black !important
+}
+
+.sm{
+    font-size: 18px;
+}
+.xsm{
+    font-size: 14px;
+}
+
+.small-box{
+    height: 100px !important;
+}
