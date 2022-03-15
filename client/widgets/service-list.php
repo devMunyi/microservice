@@ -42,7 +42,6 @@
                             <th>Run Time</th>
                             <th>Unit</th>
                             <th>Frequency</th>
-                            <th>Processed</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -57,7 +56,6 @@
                             <th>Run Time</th>
                             <th>Unit</th>
                             <th>Frequency</th>
-                            <th>Processed</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>

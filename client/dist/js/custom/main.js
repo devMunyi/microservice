@@ -54,8 +54,13 @@ function service_list() {
     search_;
 
   crudaction(jso, "/services/read_all.php" + query, "GET", function (feed) {
-    let data = feed["data"];
-    let data_length = data.length;
+    if (feed) {
+      let data = feed["data"];
+      if (data) {
+        let objLength = data.length;
+      }
+    }
+
     let totals = feed.count;
     $("#services_total").html(totals);
 
@@ -64,23 +69,19 @@ function service_list() {
       totals +
       '"></td></tr>';
 
-    // console.log(`DATA =>`, feed);
-    //console.log(`Total is ${totals} and page no is ${pageno}`);
-    //$("#fun_count").html(data_length);
     let row = "";
     let count = 0;
 
-    if (data_length > 0) {
-      for (let i = 0; i < data_length; i++) {
+    if (objLength > 0) {
+      for (let i = 0; i < objLength; i++) {
         let id = data[i].id;
         let address = data[i].service_address;
         let run_timestamp = data[i].run_timestamp;
         let unit = data[i].unit;
         let frequency = data[i].frequency;
-        let is_executed = data[i].is_executed;
+        //let is_executed = data[i].is_executed;
         let status = data[i].status;
-        // let added_at = data[i].added_at;
-        // let updated_at = data[i].updated_at;
+
         let statusView = "";
         let actionView = "";
 
@@ -101,15 +102,6 @@ function service_list() {
             ')"><span style="color:white;" class="btn btn-primary"> Activate</span></a></span>';
         }
 
-        //is executed view
-        // if (is_executed == "Yes") {
-        //   executedView =
-        //     '<span class="badge badge-pill badge-success">Yes</span>';
-        // } else {
-        //   executedView =
-        //     '<span class="badge badge-pill badge-primary">No</span>';
-        // }
-
         count++;
         row +=
           "<tr>\n" +
@@ -127,9 +119,6 @@ function service_list() {
           "</td>\n" +
           "<td>" +
           frequency +
-          "</td>\n" +
-          "<td>" +
-          isExecuted(is_executed) +
           "</td>\n" +
           "<td>" +
           statusView +
@@ -216,7 +205,7 @@ function getServiceById() {
       let run_timestamp = data.run_timestamp;
       let unit = data.unit;
       let frequency = data.frequency;
-      let is_executed = data.is_executed;
+      //let is_executed = data.is_executed;
       let status = data.status;
       let added_date = data.added_at;
       // let updated_at = data.updated_at;
@@ -274,12 +263,6 @@ function getServiceById() {
         "<td>Frequency</td>\n" +
         "<td>" +
         frequency +
-        "</td>\n" +
-        "</tr>\n" +
-        "<tr>\n" +
-        "<td>Executed</td>\n" +
-        "<td>" +
-        isExecuted(is_executed) +
         "</td>\n" +
         "</tr>\n" +
         "<tr>\n" +
