@@ -54,13 +54,11 @@ function service_list() {
     search_;
 
   crudaction(jso, "/services/read_all.php" + query, "GET", function (feed) {
-    if (feed) {
-      let data = feed["data"];
-      if (data) {
-        var objLength = data.length;
-      }
+    let data = feed["data"];
+    if (data) {
+      var objLength = data.length;
     }
-
+    
     let totals = feed.count;
     $("#services_total").html(totals);
 
