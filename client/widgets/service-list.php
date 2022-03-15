@@ -73,5 +73,5 @@
 </section>
 
 <?php
-echo "<div style='display: none;'>".paging_values_hidden('id > 0',0,5,'id','desc','', 'service_list', 1)."</div>";
+    echo "<div style='display: none;'>".paging_values_hidden('id > 0',0,10,'r_timestamp','DESC','', 'service_list', 1)."</div>";
 ?>
