@@ -57,7 +57,7 @@ function service_list() {
     if (feed) {
       let data = feed["data"];
       if (data) {
-        let objLength = data.length;
+        var objLength = data.length;
       }
     }
 
