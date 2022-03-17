@@ -415,7 +415,7 @@ function getLogsByServiceId() {
   let orderby = "logged_date";
   let dir = "DESC";
   let offset = 0;
-  let rpp = 10;
+  let rpp = 25;
   let page_no = 1;
   let jso = {};
 
