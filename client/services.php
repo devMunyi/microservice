@@ -107,6 +107,7 @@ include_once("../configs/conn.inc");
             // console.log("TYPE OF details =>" + typeof details);
             if (details === "details") {
                 getServiceById();
+                getLogsByServiceId();
             }
         })
     </script>

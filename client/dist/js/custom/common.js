@@ -1,78 +1,3 @@
-/*function crudaction(jsonbody, url, method = "POST", callback) {
-  ////////------Reusable
-  let server = $("#server_").val();
-  //let auth = $("#auth").val();
-  let auth = localStorage.getItem("token");
-
-  //////---------Clean the JSON string
-
-  let cleanJson = JSON.stringify(jsonbody);
-
-  $.ajax({
-    url: server + url,
-    method: method,
-    dataType: "json",
-    timeout: 0,
-    headers: {
-      Authorization: "Bearer " + auth,
-      "Content-Type": "application/json",
-    },
-    data: cleanJson,
-
-    success: function (result) {
-      callback(result);
-    },
-    beforeSend: function () {
-      // Handle the beforeSend event
-      $("#loader").fadeIn();
-    },
-    error: function (err) {
-      //   console.log(err);
-      feedback("ERROR", "TOAST", ".feedback_", err, 10);
-      callback(JSON.stringify(err));
-    },
-    complete: function () {
-      // Handle the complete event
-      $("#loader").fadeOut();
-    },
-  });
-}
-
-function feedback(
-  mtype = "NOTICE",
-  dtype = "TOAST",
-  target = ".feedback",
-  message,
-  secs = 1
-) {
-  let fmessage = "";
-  $(target).text("");
-  if (mtype === "NOTICE") {
-    fmessage = "<span class='info notice'>" + message + "</span>";
-  } else if (mtype === "ERROR") {
-    fmessage = "<span class='info error'>" + message + "</span>";
-  } else if (mtype === "SUCCESS") {
-    fmessage = "<span class='info success'>" + message + "</span>";
-  }
-  if (dtype === "TOAST") {
-    $("#standardnotif").html("").css("display", "none").removeClass(mtype);
-    $("#standardnotif")
-      .html(message)
-      .fadeIn("fast")
-      .addClass(mtype + "x");
-    setTimeout(function () {
-      $("#standardnotif").html("").fadeOut("fast").removeClass(mtype);
-      $(target).html("");
-    }, 1000 * secs);
-  } else if (dtype === "INLINE") {
-    $(target).html(fmessage);
-    setTimeout(function () {
-      $(target).html("");
-      $(target).html("");
-    }, 1000 * secs);
-  }
-}
-*/
 function crudaction(jsonbody, url, method = "POST", callback) {
   let server_ = $("#server_").val();
   let cleanJson = JSON.stringify(jsonbody);
@@ -347,7 +272,7 @@ function pager(tableid) {
   $(
     "<div id='pager_header' class='row page-header pb-2'>\n" +
       "                        <div class='col-sm-6'><span style=\"font-family:sans-serif\" class='font-18 font-italic text-black text-mute'></div>\n" +
-      "                        <div class='col-sm-6'><input type='text' class='form-control' id='search_' onkeyup='search();' placeholder='Search...'></div>\n" +
+      "                        <div class='col-sm-6'><input type='text' class='form-control' id='search_' onkeyup='search();' placeholder='Search by title, company, next run, unit or frequency...'></div>\n" +
       "                    </div>\n"
   ).insertBefore(tableid);
 

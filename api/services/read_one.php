@@ -20,15 +20,18 @@ if ($alltotal == 1) {
     $service_arr = array("success" => true, "count" => $alltotal);
     extract($ms);
 
+    $company_name_ = fetchrow('tbl_companies', "id='" . $company_name . "'", "name");
+    $unit_ = fetchrow('tbl_units', "id='" . $unit . "'", "name");
     $service_item = array(
         "id" => $id,
+        "company_name" => $company_name_,
+        "service_title" => $service_title, 
         "service_address" => $service_address,
-        "run_timestamp" => $r_timestamp,
-        "unit" => $unit,
+        "last_run_datetime" => $last_run_datetime,
+        "next_run_datetime" => $next_run_datetime,
+        "unit" => $unit_,
         "frequency" => $frequency,
-        "is_executed" => $is_executed,
         "added_at" => $added_at,
-        "updated_at" => $updated_at,
         "status" => $status,
     );
 

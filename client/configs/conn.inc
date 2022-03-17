@@ -14,9 +14,11 @@ if(mysqli_connect_errno())
     exit();
 }
 
+
 $date=date('Y-m-d');
 $date2=date('Y-M-D');
-$fulldate=date('Y-m-d H:i:s');
+$thisfulldate=date('Y-m-d H:i:s');
+$thisfulldate_=date('Y-m-d H:i');
 $thisyear=date('Y');
 $thismonth=date('m');
 $thismonthname=date('M');

@@ -17,15 +17,32 @@
 <section class="content">
     <div class="row">
         <div class="col-sm-12">
-
             <!-- /.box -->
             <div class="card ml-3 mr-3">
                 <div class="card-header pt-2">
                     <div class="row pr-2">
                         <div class="col-md-10">
                             <h3 class="card-title font-16 pl-2">
-                                <a class="btn font-16 btn-md bg-blue text-bold" href="#"><i class="fa fa-clone"></i> All</a>
+                                <!-- <a class="btn font-16 btn-md bg-blue text-bold" href="#"><i class="fa fa-clone"></i> All</a> -->
+                                <select class="btn font-16 btn-md btn-default text-bold top-select" id="service_order" onchange="service_filters()">
+                                    <option value="asc">Upcoming First</option>
+                                    <option value="desc">Future First</option>
+                                </select>
+
+                                <select class="btn font-16 btn-md btn-default text-bold top-select" id="sel_company" onchange="service_filters()">
+                                    <option value="0">All Companies</option>
+                                    <?php
+                                    $tbl_companies_ = fetchtable('tbl_companies',"status > 0", "name", "asc", "0,25", "id ,name ");
+                                    while($w = mysqli_fetch_array($tbl_companies_))
+                                    {
+                                        $id = $w['id'];
+                                        $name = $w['name'];
+                                        echo "<option value='$id'>$name</option>";
+                                    }
+                                    ?>
+                                </select>
                             </h3>
+
                         </div>
                         <div class="col-md-2">
                             <a class="btn btn-success float-right" href="?service-add-edit"><i class="fa fa-plus"></i> ADD NEW</a>
@@ -36,29 +53,31 @@
                 <div class="card-body">
                     <table id="service-table" class="table table-bordered table-condensed table-striped">
                         <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th style="width: 100px;">Address</th>
-                            <th>Run Time</th>
-                            <th>Unit</th>
-                            <th>Frequency</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
+                            <tr>
+                                <th>No.</th>
+                                <th>Title</th>
+                                <th>Last Run</th>
+                                <th>Next Run</th>
+                                <th>Unit</th>
+                                <th>Frequency</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
                         </thead>
                         <tbody id="service_list">
 
                         </tbody>
                         <tfoot>
-                        <tr>
-                            <th>No.</th>
-                            <th style="width: 100px;">Address</th>
-                            <th>Run Time</th>
-                            <th>Unit</th>
-                            <th>Frequency</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
+                            <tr>
+                                <th>No.</th>
+                                <th>title</th>
+                                <th>Last Run</th>
+                                <th>Next Run</th>
+                                <th>Unit</th>
+                                <th>Frequency</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
                         </tfoot>
                     </table>
                 </div>
@@ -71,5 +90,5 @@
 </section>
 
 <?php
-    echo "<div style='display: none;'>".paging_values_hidden('id > 0',0,10,'r_timestamp','DESC','', 'service_list', 1)."</div>";
+echo "<div style='display: none;'>" . paging_values_hidden('id > 0', 0, 10, 'next_run_datetime', 'ASC', '', 'service_list', 1) . "</div>";
 ?>

@@ -2,10 +2,10 @@
 -- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Mar 14, 2022 at 08:37 PM
+-- Host: localhost
+-- Generation Time: Mar 17, 2022 at 01:02 PM
 -- Server version: 10.4.22-MariaDB
--- PHP Version: 8.0.13
+-- PHP Version: 8.1.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,34 @@ SET time_zone = "+00:00";
 --
 -- Database: `microservice_db`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_companies`
+--
+
+CREATE TABLE `tbl_companies` (
+  `id` mediumint(10) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `status` int(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tbl_companies`
+--
+
+INSERT INTO `tbl_companies` (`id`, `name`, `status`) VALUES
+(1, 'Company 1', 1),
+(2, 'Company 2', 1),
+(3, 'Company 3', 1),
+(4, 'Company 4', 1),
+(5, 'Company 5', 1),
+(6, 'Company 6', 1),
+(7, 'Company 7', 1),
+(8, 'Company 8', 1),
+(9, 'Company 9', 1),
+(10, 'Company 10', 1);
 
 -- --------------------------------------------------------
 
@@ -118,8 +146,16 @@ CREATE TABLE `tbl_logs` (
 --
 
 INSERT INTO `tbl_logs` (`id`, `log`, `logged_date`, `service_id`, `status`) VALUES
-(1, 'Success', '2022-03-14 15:20:03', 1, 1),
-(2, 'Failed with code 404', '2022-03-14 16:37:05', 2, 1);
+(1, 'Success', '2022-03-17 10:56:01', 4, 1),
+(2, 'Success', '2022-03-17 10:57:03', 4, 1),
+(3, 'Success', '2022-03-17 10:58:04', 4, 1),
+(4, 'Failed with code 0', '2022-03-17 11:01:10', 4, 1),
+(5, 'Success', '2022-03-17 11:03:02', 4, 1),
+(6, 'Failed with code 0', '2022-03-17 11:04:13', 4, 1),
+(7, 'Success', '2022-03-17 11:07:01', 3, 1),
+(8, 'Success', '2022-03-17 11:09:03', 3, 1),
+(9, 'Success', '2022-03-17 11:25:35', 2, 1),
+(10, 'Success', '2022-03-17 11:30:23', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -129,8 +165,11 @@ INSERT INTO `tbl_logs` (`id`, `log`, `logged_date`, `service_id`, `status`) VALU
 
 CREATE TABLE `tbl_services` (
   `id` int(10) NOT NULL,
+  `company_name` mediumint(10) NOT NULL COMMENT 'from tbl_companies table',
+  `service_title` varchar(100) NOT NULL,
   `service_address` varchar(250) NOT NULL,
-  `r_timestamp` datetime NOT NULL,
+  `last_run_datetime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `next_run_datetime` datetime NOT NULL,
   `unit` tinyint(2) NOT NULL,
   `frequency` tinyint(2) NOT NULL,
   `is_executed` char(3) NOT NULL DEFAULT 'No',
@@ -143,9 +182,10 @@ CREATE TABLE `tbl_services` (
 -- Dumping data for table `tbl_services`
 --
 
-INSERT INTO `tbl_services` (`id`, `service_address`, `r_timestamp`, `unit`, `frequency`, `is_executed`, `added_at`, `updated_at`, `status`) VALUES
-(1, 'http://localhost/microservice/dates-test.php', '2022-03-14 15:30:00', 1, 10, 'No', '2022-03-13 14:28:00', '2022-03-14 21:25:52', 1),
-(2, 'https://backgen.net/basic-css-plus-html/tribute.html', '2022-03-14 15:32:00', 1, 1, 'No', '2022-03-14 15:25:46', '2022-03-14 22:35:11', 1);
+INSERT INTO `tbl_services` (`id`, `company_name`, `service_title`, `service_address`, `last_run_datetime`, `next_run_datetime`, `unit`, `frequency`, `is_executed`, `added_at`, `updated_at`, `status`) VALUES
+(1, 3, 'Everyday 6 Am Run', 'https://www.google.com', '0000-00-00 00:00:00', '2022-03-18 06:00:00', 3, 1, 'No', '2022-03-13 14:28:00', '2022-03-17 11:35:03', 1),
+(2, 1, 'Every Minute Run', 'https://www.google.com', '2022-03-17 11:25:00', '2022-03-17 14:55:00', 1, 1, 'No', '2022-03-14 15:25:46', '2022-03-17 14:52:28', 1),
+(3, 2, 'Every Two Hours Run', 'https://www.google.com', '2022-03-17 11:30:00', '2022-03-17 14:30:00', 2, 2, 'No', '2022-03-15 08:53:50', '2022-03-17 14:08:37', 1);
 
 -- --------------------------------------------------------
 
@@ -164,16 +204,22 @@ CREATE TABLE `tbl_units` (
 --
 
 INSERT INTO `tbl_units` (`id`, `name`, `status`) VALUES
-(1, 'minutes', 1),
-(2, 'hours', 1),
-(3, 'days', 1),
-(4, 'weeks', 1),
-(5, 'months', 1),
-(6, 'years', 1);
+(1, 'Minutes', 1),
+(2, 'Hours', 1),
+(3, 'Days', 1),
+(4, 'Weeks', 1),
+(5, 'Months', 1),
+(6, 'Years', 1);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `tbl_companies`
+--
+ALTER TABLE `tbl_companies`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tbl_frequencies`
@@ -204,6 +250,12 @@ ALTER TABLE `tbl_units`
 --
 
 --
+-- AUTO_INCREMENT for table `tbl_companies`
+--
+ALTER TABLE `tbl_companies`
+  MODIFY `id` mediumint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT for table `tbl_frequencies`
 --
 ALTER TABLE `tbl_frequencies`
@@ -213,13 +265,13 @@ ALTER TABLE `tbl_frequencies`
 -- AUTO_INCREMENT for table `tbl_logs`
 --
 ALTER TABLE `tbl_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `tbl_services`
 --
 ALTER TABLE `tbl_services`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_units`

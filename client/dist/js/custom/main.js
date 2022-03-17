@@ -12,12 +12,21 @@ function service_list() {
       "</div>"
   );
 
-  let jso = {};
-  let status = 1;
-  let orStatus = 0;
-  let orderby = "r_timestamp";
-  let dir = "DESC";
-  let search_ = "";
+  
+  let where_ = $("#_where_").val();
+  if (!where_) {
+    where_ = "id > 0";
+  }
+
+  let dir = $("#_dir_").val();
+  if (!dir) {
+    dir = "ASC";
+  }
+
+  let orderby = $("#_orderby_").val();
+  if (!orderby) {
+    orderby = "next_run_datetime";
+  }
 
   let offset = $("#_offset_").val();
   if (!offset) {
@@ -27,21 +36,15 @@ function service_list() {
   if (!rpp) {
     rpp = 10;
   }
-  let page_no = $("#_page_no_").val();
-  console.log("Page No =>", page_no);
-  if (!page_no) {
-    page_no = 1;
-  }
+
   let search = $("#search_").val();
   if (!search) {
     search = "";
   }
 
   let query =
-    "?status=" +
-    status +
-    "&orStatus=" +
-    orStatus +
+    "?where_=" +
+    where_ +
     "&orderby=" +
     orderby +
     "&dir=" +
@@ -51,37 +54,60 @@ function service_list() {
     "&rpp=" +
     rpp +
     "&search=" +
-    search_;
+    search;
+
+  //default jsonbody
+  let jso = {};
 
   crudaction(jso, "/services/read_all.php" + query, "GET", function (feed) {
-    let data = feed["data"];
-    if (data) {
-      var objLength = data.length;
-    }
-    
-    let totals = feed.count;
-    $("#services_total").html(totals);
-
     let pagination =
       '<tr style="display: none;"><td><input type="text" id="_alltotal_" value="' +
-      totals +
+      0 +
       '"></td></tr>';
+    if (feed.success) {
+      let data = feed["data"];
+      let objLength = data.length;
 
-    let row = "";
-    let count = 0;
+      let totals = feed.count;
+      $("#services_total").html(totals);
 
-    if (objLength > 0) {
+      pagination =
+        '<tr style="display: none;"><td><input type="text" id="_alltotal_" value="' +
+        totals +
+        '"></td></tr>';
+
+      let row = "";
+      let count = 0;
       for (let i = 0; i < objLength; i++) {
         let id = data[i].id;
-        let address = data[i].service_address;
-        let run_timestamp = data[i].run_timestamp;
+        let service_title = data[i].service_title;
+        let company_name = data[i].company_name;
+        let last_run_datetime = data[i].last_run_datetime;
+        let next_run_datetime = data[i].next_run_datetime;
         let unit = data[i].unit;
         let frequency = data[i].frequency;
-        //let is_executed = data[i].is_executed;
         let status = data[i].status;
 
         let statusView = "";
         let actionView = "";
+
+        //last run date and time view
+        last_run_datetime = sliceDatetime(last_run_datetime);
+        next_run_datetime = sliceDatetime(next_run_datetime);
+
+        let fancyNextRunDatetime;
+        fancyNextRunDatetime = momentDatetime(next_run_datetime);
+
+        let fancyLastRunDatetime;
+        if (last_run_datetime != "0000-00-00 00:00") {
+          fancyLastRunDatetime = momentDatetime(last_run_datetime);
+        } else {
+          fancyLastRunDatetime = "";
+        }
+        //console.log("Human friendly datetime => ", momentDatetime("2022-03-17 06:00"));
+        if (last_run_datetime == "0000-00-00 00:00") {
+          last_run_datetime = "N/A";
+        }
 
         //status view
         if (status == 1) {
@@ -106,14 +132,26 @@ function service_list() {
           "<td>" +
           count +
           "</td>\n" +
-          "<td style='font-size: 12px;'>" +
-          address +
+          "<td>" +
+          service_title +
+          "<br><i><small><b class='text-muted'>Company</b>: <span>" +
+          company_name +
+          "</span></small></i>" +
           "</td>\n" +
           "<td>" +
-          run_timestamp +
+          last_run_datetime +
+          '<br><span" class="badge badge-secondary">' +
+          fancyLastRunDatetime +
+          "</span>" +
           "</td>\n" +
           "<td>" +
-          unitCheck(unit) +
+          next_run_datetime +
+          '<br><span" class="badge badge-secondary">' +
+          fancyNextRunDatetime +
+          "</span>" +
+          "</td>\n" +
+          "<td>" +
+          unit +
           "</td>\n" +
           "<td>" +
           frequency +
@@ -146,23 +184,36 @@ function service_list() {
   }, 500);
 }
 
-function unitCheck(unit) {
-  //unit View
-  let unitView;
-  if (unit == "1") {
-    unitView = "Minutes";
-  } else if (unit == "2") {
-    unitView = "Hours";
-  } else if (unit == "3") {
-    unitView = "Days";
-  } else if (unit == "4") {
-    unitView = "Weeks";
-  } else if (unit == "5") {
-    unitView = "Months";
-  } else if (unit == "6") {
-    unitView = "Years";
+
+//customer list filters
+function service_filters() {
+  let service_order = $('#service_order').val();
+  let company_name = parseInt($('#sel_company').val());
+
+  let wher = "id > 0";
+  $('#_dir_').val(service_order);
+
+  if (company_name > 0) {
+      wher += " AND company_name=" + company_name;
   }
-  return unitView;
+
+  //console.log("filt " + wher);
+
+  if (wher) {
+      $('#_where_').val(wher);
+      $('#_offset_').val(0);
+
+      pager_home();
+  } else {
+      $('#_where_').val(" status > -1");
+      $('#_offset_').val(0);
+  }
+}
+
+
+//friendly datetime formatter
+function momentDatetime(targetdt) {
+  return moment(targetdt).fromNow();
 }
 
 function isExecuted(isexc) {
@@ -199,16 +250,35 @@ function getServiceById() {
 
     if (data) {
       let id = data.id;
+      let service_title = data.service_title;
+      let company_name = data.company_name;
       let address = data.service_address;
-      let run_timestamp = data.run_timestamp;
+      let last_run_datetime = data.last_run_datetime;
+      let next_run_datetime = data.next_run_datetime;
       let unit = data.unit;
       let frequency = data.frequency;
-      //let is_executed = data.is_executed;
       let status = data.status;
       let added_date = data.added_at;
-      // let updated_at = data.updated_at;
+
       let statusView = "";
       let actionView = "";
+
+      last_run_datetime = sliceDatetime(last_run_datetime);
+      next_run_datetime = sliceDatetime(next_run_datetime);
+
+      let fancyNextRunDatetime;
+      fancyNextRunDatetime = momentDatetime(next_run_datetime);
+
+      let fancyLastRunDatetime;
+      if (last_run_datetime != "0000-00-00 00:00") {
+        fancyLastRunDatetime = momentDatetime(last_run_datetime);
+      } else {
+        fancyLastRunDatetime = "";
+      }
+      //console.log("Human friendly datetime => ", momentDatetime("2022-03-17 06:00"));
+      if (last_run_datetime == "0000-00-00 00:00") {
+        last_run_datetime = "N/A";
+      }
 
       if (status == 1) {
         statusView =
@@ -240,21 +310,45 @@ function getServiceById() {
         "</td>\n" +
         "</tr>\n" +
         "<tr>\n" +
-        "<td>Name</td>\n" +
+        "<td>Service Title</td>\n" +
+        "<td>" +
+        service_title +
+        "</td>\n" +
+        "</tr>\n" +
+        "<tr>\n" +
+        "<td>Address</td>\n" +
         "<td>" +
         address +
         "</td>\n" +
         "</tr>\n" +
         "<tr>\n" +
-        "<td>Run Time</td>\n" +
+        "<td>Company Name</td>\n" +
         "<td>" +
-        run_timestamp +
+        company_name +
+        "</td>\n" +
+        "</tr>\n" +
+        "<tr>\n" +
+        "<td>Last Run</td>\n" +
+        "<td>" +
+        sliceDatetime(last_run_datetime) +
+        '<br><span" class="badge badge-secondary">' +
+        fancyLastRunDatetime +
+        "</span>" +
+        "</td>\n" +
+        "</tr>\n" +
+        "<tr>\n" +
+        "<td>Next Run</td>\n" +
+        "<td>" +
+        sliceDatetime(next_run_datetime) +
+        '<br><span" class="badge badge-secondary">' +
+        fancyNextRunDatetime +
+        "</span>" +
         "</td>\n" +
         "</tr>\n" +
         "<tr>\n" +
         "<td>Unit</td>\n" +
         "<td>" +
-        unitCheck(unit) +
+        unit +
         "</td>\n" +
         "</tr>\n" +
         "<tr>\n" +
@@ -272,7 +366,7 @@ function getServiceById() {
         "<tr>\n" +
         "<td>Added Date</td>\n" +
         "<td>" +
-        added_date +
+        sliceDatetime(added_date) +
         "</td>\n" +
         "</tr>\n" +
         "<tr>\n" +
@@ -301,6 +395,88 @@ function getServiceById() {
       );
     }
   });
+}
+
+function getLogsByServiceId() {
+  //show loader
+  $("#log-list").html(
+    '<div class="row d-flex justify-content-center align-items-center">' +
+      '<div class="col-md-6"></div>' +
+      '<div class="col-md-6">' +
+      '<div class="spinner-border" role="status">' +
+      '<span class="sr-only">Loading...</span>' +
+      "</div>" +
+      "</div>" +
+      "</div>"
+  );
+
+  let service_id = $("#service_").val();
+  let orderby = "logged_date";
+  let dir = "DESC";
+  let offset = 0;
+  let rpp = 10;
+  let page_no = 1;
+  let jso = {};
+
+  let query =
+    "?service_id=" +
+    service_id +
+    "&page_no=" +
+    page_no +
+    "&orderby=" +
+    orderby +
+    "&dir=" +
+    dir +
+    "&offset=" +
+    offset +
+    "&rpp=" +
+    rpp;
+
+  crudaction(
+    jso,
+    "/logs/logs_by_serviceid.php" + query,
+    "GET",
+    function (feed) {
+      if (feed.success) {
+        let data = feed["data"];
+        let objLength = data.length;
+        let row = "";
+
+        for (let i = 0; i < objLength; i++) {
+          let log = data[i].log;
+          let logView = '<span class="text-green">' + log + "</span>";
+          let logged_date = data[i].logged_date;
+          logged_date = sliceDatetime(logged_date);
+
+          if (log != "Success") {
+            logView = '<span class="text-danger">' + log + "</span>";
+          }
+
+          let fancyloggedDate;
+          fancyloggedDate = momentDatetime(logged_date);
+
+          row +=
+            "<tr><td>" +
+            logView +
+            "</td><td>[" +
+            logged_date +
+            "] " +
+            fancyloggedDate +
+            "</td></tr>";
+        }
+        $("#log_list").html(row);
+      } else {
+        //////-------No functionalities found
+        $("#log_list").html(
+          "<tr><td colspan='2'><i>No Records Found</i></td></tr>"
+        );
+      }
+    }
+  );
+}
+
+function sliceDatetime(dt) {
+  return dt.slice(0, 16);
 }
 
 function deleteService(service_id) {
@@ -332,15 +508,19 @@ function save_service() {
   disabledBtn();
 
   let service_id = parseInt($("#service_edit_id").val());
+  let company_name = $("#company_name").val();
+  let service_title = $("#service_title").val();
+
   let service_address = $("#service_address").val();
-  let r_timestamp = $("#r_timestamp").val();
-  console.log("Run datetime =>", r_timestamp);
-  console.log("Run datetime length =>", r_timestamp.length);
+  let next_run = $("#next_run").val();
+
   let unit = $("#unit").val();
   let frequency = $("#frequency").val();
   let jso = {
+    company_name,
+    service_title,
     service_address,
-    r_timestamp,
+    next_run,
     unit,
     frequency,
   };
@@ -352,8 +532,10 @@ function save_service() {
     method = "PUT";
     url = "/services/update.php";
     jso = {
+      company_name,
+      service_title,
       service_address,
-      r_timestamp,
+      next_run,
       unit,
       frequency,
       service_id,
@@ -367,32 +549,22 @@ function save_service() {
       submitBtn("save_service()");
     }
 
-    // console.log(JSON.stringify(feed));
-
     if (feed["success"] === false) {
       let message = feed["message"];
       var Toast = Swal.mixin({
         toast: true,
-        position: "top",
+        position: "top-end",
         showConfirmButton: false,
         timer: 2500,
+        padding: '0.85rem',
       });
 
       Toast.fire({
         icon: "error",
         title: message,
+        color: "white",
       });
-      // $("#feedback").html(
-      //   '<button type="button" class="btn btn-success swalDefaultSuccess">' +
-      //     message +
-      //     "</button>"
-      //   // '<div style="font-size: 16px" class="text-center alert alert-danger alert-dismissible" role="alert">\n' +
-      //   //   '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>\n' +
-      //   //   "" +
-      //   //   message +
-      //   //   ".\n" +
-      //   //   "</div>"
-      // );
+
       setTimeout(function () {
         $("#feedback").html("");
       }, 4000);
@@ -401,9 +573,10 @@ function save_service() {
 
       var Toast = Swal.mixin({
         toast: true,
-        position: "top",
+        position: "top-end",
         showConfirmButton: false,
         timer: 2500,
+        padding: '0.85rem',
       });
 
       Toast.fire({
@@ -411,17 +584,6 @@ function save_service() {
         title: message,
       });
 
-      // $("#feedback").html(
-      //   '<button type="button" class="btn btn-danger swalDefaultError">' +
-      //     message +
-      //     "</button>"
-      //   // '<div style="font-size: 16px" class="text-center alert alert-success alert-dismissible" role="alert">\n' +
-      //   //   '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>\n' +
-      //   //   "" +
-      //   //   message +
-      //   //   ".\n" +
-      //   //   "</div>"
-      // );
       setTimeout(function () {
         $("#feedback").html("");
       }, 4000);

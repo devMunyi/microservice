@@ -9,41 +9,86 @@ include_once("../../configs/conn.inc");
 
 
 //Get and set string query variable;
+$where = isset($_GET["where_"]) ? $_GET["where_"] : 'id > 0';
 $offset = isset($_GET["offset"]) ? $_GET["offset"] : 0;
 $rpp = isset($_GET["rpp"]) ? $_GET["rpp"] : 10;
-$page_no = isset($_GET["page_no"]) ? $_GET["page_no"] : 1;
-$orderby = isset($_GET["orderby"]) ? $_GET["orderby"] : "r_timestamp";
-$dir = isset($_GET["dir"]) ? $_GET["dir"] : "DESC";
+//$page_no = isset($_GET["page_no"]) ? $_GET["page_no"] : 1;
+$orderby = isset($_GET["orderby"]) ? $_GET["orderby"] : "next_run_datetime";
+$dir = isset($_GET["dir"]) ? $_GET["dir"] : "ASC";
 $search = isset($_GET["search"]) ? $_GET["search"] : "";
 
 $limit = "$offset, $rpp";
 
 
+//company name lookup
+$company_array = array();
+$company_ = fetchtable2("tbl_companies", "name LIKE \"%$search%\"", "id", "asc", "id");
+$company_count = mysqli_num_rows($company_);
+if($company_count > 0){
+    while($company_list = mysqli_fetch_array($company_)){
+        $company_id = $company_list['id'];
+        array_push($company_array, $company_id);
+    }
+    $service_company_list = implode(", ", $company_array);
+    $orservicecompany = " OR `company_name` IN ($service_company_list)";
+}
+
+//unit name lookup
+$unit_array = array();
+$unit_ = fetchtable2("tbl_units", "name LIKE \"%$search%\"", "id", "asc", "id");
+$unit_count = mysqli_num_rows($unit_);
+if($unit_count > 0){
+    while($unit_list = mysqli_fetch_array($unit_)){
+        $unit_id = $unit_list['id'];
+        array_push($unit_array, $unit_id);
+    }
+    $service_unit_list = implode(", ", $unit_array);
+    $orserviceunit = " OR `unit` IN ($service_unit_list)";
+}
+
+
+//frequency value lookup
+$unit_array = array();
+$unit_ = fetchtable2("tbl_units", "name LIKE \"%$search%\"", "id", "asc", "id");
+$unit_count = mysqli_num_rows($unit_);
+if($unit_count > 0){
+    while($unit_list = mysqli_fetch_array($unit_)){
+        $unit_id = $unit_list['id'];
+        array_push($unit_array, $unit_id);
+    }
+    $service_unit_list = implode(", ", $unit_array);
+    $orserviceunit = " OR `unit` IN ($service_unit_list)";
+}
+
+
 if ((input_available($search)) == 1) {
-    $andsearch = " AND (service_address LIKE \"%$search%\" OR r_timestamp LIKE \"%$search%\" OR unit LIKE \"%$search%\" OR frequency LIKE \"%$search%\")";
+    $andsearch = " AND (service_title LIKE \"%$search%\" $orservicecompany OR next_run_datetime LIKE \"%$search%\" $orserviceunit OR frequency LIKE \"%$search%\")";
 } else {
     $andsearch = "";
 }
 
-$ms = fetchtable('tbl_services', "id >= 1 $andsearch", "$orderby", "$dir", "$limit", "id, service_address, r_timestamp, unit, frequency, is_executed, added_at, status");
+$ms = fetchtable('tbl_services', "$where $andsearch", "$orderby", "$dir", "$limit", "id, company_name, service_title, last_run_datetime, next_run_datetime, unit, frequency, added_at, status");
 
 ///----------Paging Option
-$alltotal = countotal("tbl_services", "id > 0 $andsearch");
+$alltotal = countotal("tbl_services", "$where $andsearch");
 
 if ($alltotal > 0) {
     //Service array 
-    $services_arr = array("success" => true, "count" => $alltotal, "page_no" => $page_no);
+    $services_arr = array("success" => true, "count" => $alltotal);
     $services_arr['data'] = array();
 
     while ($row = mysqli_fetch_array($ms)) {
         extract($row);
+        $company_name_ = fetchrow('tbl_companies', "id='" . $company_name . "'", "name");
+        $unit_ = fetchrow('tbl_units', "id='" . $unit . "'", "name");
         $service_item = array(
             "id" => $id,
-            "service_address" => $service_address,
-            "run_timestamp" => $r_timestamp,
-            "unit" => $unit,
+            "company_name" => $company_name_, 
+            "service_title" => $service_title,
+            "last_run_datetime" => $last_run_datetime,
+            "next_run_datetime" => $next_run_datetime,
+            "unit" => $unit_,
             "frequency" => $frequency,
-            "is_executed" => $is_executed,
             "added_at" => $added_at,
             "status" => $status,
         );

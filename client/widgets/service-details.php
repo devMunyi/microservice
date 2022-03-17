@@ -52,28 +52,8 @@
                                             <th>Date</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-
-                                        <?php
-                                        $events_ = fetchtable('tbl_logs', "service_id='$service_'", "id", "desc", "0,20", "id ,log,logged_date");
-                                        $events_total = countotal("tbl_logs", "status > 0 AND service_id = '$service_'");
-                                        if ($events_total > 0) {
-                                            while ($d = mysqli_fetch_array($events_)) {
-                                                $id = $d['id'];
-                                                $log_ = $d['log'];
-                                                $log = '<span class="text-danger font-bold">'.$log_.'</span>';
-                                                if($log_ == "Success"){
-                                                    $log = '<span class="text-green font-bold">'.$log_.'</span>';
-                                                }
-                                                
-
-                                                $logged_date = $d['logged_date'];
-                                                echo " <tr><td>$log</td><td>$logged_date</td> </tr>";
-                                            }
-                                        } else {
-                                            echo "<tr><td colspan='2'><i>No Events Found</i></td></tr>";
-                                        }
-                                        ?>
+                                    <tbody id="log_list">
+                                         
                                     </tbody>
                                 </table>
                             </div>
