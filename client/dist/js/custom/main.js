@@ -60,10 +60,10 @@ function service_list() {
   let jso = {};
 
   crudaction(jso, "/services/read_all.php" + query, "GET", function (feed) {
-    let pagination =
+   /*  let pagination =
       '<tr style="display: none;"><td><input type="text" id="_alltotal_" value="' +
       0 +
-      '"></td></tr>';
+      '"></td></tr>'; */
     if (feed.success) {
       let data = feed["data"];
       let objLength = data.length;
@@ -71,10 +71,11 @@ function service_list() {
       let totals = feed.count;
       $("#services_total").html(totals);
 
-      pagination =
+      $('#_alltotal_').val(totals);
+     /*  pagination =
         '<tr style="display: none;"><td><input type="text" id="_alltotal_" value="' +
         totals +
-        '"></td></tr>';
+        '"></td></tr>'; */
 
       let row = "";
       let count = 0;
@@ -170,11 +171,11 @@ function service_list() {
           "</td>\n" +
           "</tr>";
       }
-      $("#service_list").html(row + pagination);
+      $("#service_list").html(row);
     } else {
       //////-------No functionalities found
       $("#service_list").html(
-        "<tr><td colspan='5'><i>No Records Found</i></td></tr>" + pagination
+        "<tr><td colspan='5'><i>No Records Found</i></td></tr>"
       );
     }
   });

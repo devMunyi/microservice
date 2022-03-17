@@ -1418,7 +1418,7 @@ function paging($url,$orderby,$dir,$offset,$rpp,$fds,$search,$box,$remaining,$wh
 }
 
 
-function paging_values_hidden($where, $offset, $rpp, $orderby, $dir, $search, $func, $page_no = 1){
+function paging_values_hidden($where, $offset, $rpp, $orderby, $dir, $search, $func, $page_no = 1, $records = 0){
     $vals.= "<input type='text' title='where' id='_where_' value='$where'>";
     $vals.= "<input type='text' title='offset' id='_offset_' value='$offset'>";
     $vals.= "<input type='text' title='rpp' id='_rpp_' value='$rpp'>";
@@ -1427,7 +1427,7 @@ function paging_values_hidden($where, $offset, $rpp, $orderby, $dir, $search, $f
     $vals.= "<input type='text' title='dir' id='_dir_' value='$dir'>";
     $vals.= "<input type='text' title='search' id='_search_' value='$search'>";
     $vals.= "<input type='text' title='func' id='_func_' value='$func()'>";
-
+    $vals.= "<input type='text' title='all_total' id='_alltotal_' value='$records'>";
     return $vals;
 
 }
