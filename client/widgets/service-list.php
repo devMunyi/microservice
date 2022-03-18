@@ -70,7 +70,7 @@
                         <tfoot>
                             <tr>
                                 <th>No.</th>
-                                <th>title</th>
+                                <th>Title</th>
                                 <th>Last Run</th>
                                 <th>Next Run</th>
                                 <th>Unit</th>
