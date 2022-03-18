@@ -171,7 +171,7 @@ function service_list() {
       $('#_alltotal_').val(totals);
 
       $("#service_list").html(
-        "<tr><td colspan='5'><i>No Records Found</i></td></tr>"
+        "<tr><td colspan='8'><i>No Records Found</i></td></tr>"
       );
     }
   });

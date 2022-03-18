@@ -272,7 +272,7 @@ function pager(tableid) {
   $(
     "<div id='pager_header' class='row page-header pb-2'>\n" +
       "                        <div class='col-sm-6'><span style=\"font-family:sans-serif\" class='font-18 font-italic text-black text-mute'></div>\n" +
-      "                        <div class='col-sm-6'><input type='text' class='form-control' id='search_' onkeyup='search();' placeholder='Search by title, company, next run, unit or frequency...'></div>\n" +
+      "                        <div class='col-sm-6'><input type='text' class='form-control' id='search_' onkeyup='search();' placeholder='Search by service title, company name, unit or frequency...'></div>\n" +
       "                    </div>\n"
   ).insertBefore(tableid);
 
