@@ -60,10 +60,6 @@ function service_list() {
   let jso = {};
 
   crudaction(jso, "/services/read_all.php" + query, "GET", function (feed) {
-   /*  let pagination =
-      '<tr style="display: none;"><td><input type="text" id="_alltotal_" value="' +
-      0 +
-      '"></td></tr>'; */
     if (feed.success) {
       let data = feed["data"];
       let objLength = data.length;
@@ -72,10 +68,6 @@ function service_list() {
       $("#services_total").html(totals);
 
       $('#_alltotal_').val(totals);
-     /*  pagination =
-        '<tr style="display: none;"><td><input type="text" id="_alltotal_" value="' +
-        totals +
-        '"></td></tr>'; */
 
       let row = "";
       let count = 0;
@@ -140,13 +132,13 @@ function service_list() {
           "</span></small></i>" +
           "</td>\n" +
           "<td>" +
-          last_run_datetime +
+          timeConversion12Hours(last_run_datetime) +
           '<br><span" class="badge badge-secondary">' +
           fancyLastRunDatetime +
           "</span>" +
           "</td>\n" +
           "<td>" +
-          next_run_datetime +
+          timeConversion12Hours(next_run_datetime) +
           '<br><span" class="badge badge-secondary">' +
           fancyNextRunDatetime +
           "</span>" +
@@ -331,7 +323,7 @@ function getServiceById() {
         "<tr>\n" +
         "<td>Last Run</td>\n" +
         "<td>" +
-        sliceDatetime(last_run_datetime) +
+        timeConversion12Hours(sliceDatetime(last_run_datetime)) +
         '<br><span" class="badge badge-secondary">' +
         fancyLastRunDatetime +
         "</span>" +
@@ -340,7 +332,7 @@ function getServiceById() {
         "<tr>\n" +
         "<td>Next Run</td>\n" +
         "<td>" +
-        sliceDatetime(next_run_datetime) +
+        timeConversion12Hours(sliceDatetime(next_run_datetime)) +
         '<br><span" class="badge badge-secondary">' +
         fancyNextRunDatetime +
         "</span>" +
@@ -460,7 +452,7 @@ function getLogsByServiceId() {
             "<tr><td>" +
             logView +
             "</td><td>[" +
-            logged_date +
+            timeConversion12Hours(logged_date) +
             "] " +
             fancyloggedDate +
             "</td></tr>";
@@ -475,6 +467,69 @@ function getLogsByServiceId() {
     }
   );
 }
+
+
+function timeConversion24Hours(dt) {
+  //slice time for conversion
+  let ot = dt.slice(11, 18);
+  let mt = dt.slice(11, 18);
+
+  let lastTwo = mt.slice(-2);
+  let firstTwo = mt.slice(0, 2);
+  let intFirstTwo = parseInt(firstTwo);
+
+  if (lastTwo == "PM" && intFirstTwo < 12) {
+      intFirstTwo += 12;
+      mt = mt.replace(firstTwo, intFirstTwo).replace(lastTwo, "");
+  } else if (lastTwo == "PM" && intFirstTwo >= 12) {
+      mt = mt.replace(lastTwo, "");
+  } else if (lastTwo == "AM" && intFirstTwo < 12) {
+      mt = mt.replace(lastTwo, "");
+  } else {
+      if (lastTwo == "AM" && intFirstTwo == 12) {
+          intFirstTwo -= 12;
+          mt = mt.replace(lastTwo, "").replace(firstTwo, "0" + intFirstTwo);
+      }
+  }
+
+  dt = dt.replace(ot, mt);
+  return dt;
+}
+
+
+function timeConversion12Hours(dt) {
+  //slice time for conversion
+  let ot = dt.slice(11, 16);
+  let mt = dt.slice(11, 16);
+
+  /* let lastTwo = mt.slice(-2); */
+  let firstTwo = mt.slice(0, 2);
+  let intFirstTwo = parseInt(firstTwo);
+  let timeZeroIndex = mt.slice(0, 1);
+
+  /* console.log("ZERO INDEX VALUE IS => ", timeZeroIndex); */
+
+  if (intFirstTwo == "00") {
+    intFirstTwo += 12;
+    mt = mt.replace(firstTwo, intFirstTwo) + "AM";
+  } else if (intFirstTwo < 12 && intFirstTwo != "00" && timeZeroIndex != 0) {
+    mt = mt + "AM";
+  } else if (intFirstTwo < 12 && intFirstTwo != "00" && timeZeroIndex == 0) {
+    console.log("WE FOUND ONE HERE");
+    mt = mt.replace("0", "") + "AM";
+  } else if (intFirstTwo > 12) {
+    intFirstTwo -= 12;
+    mt = mt.replace(firstTwo, intFirstTwo) + "PM";
+  } else {
+    if (intFirstTwo == 12) {
+      mt = mt + "PM";
+    }
+  }
+
+  dt = dt.replace(ot, mt);
+  return dt;
+}
+
 
 function sliceDatetime(dt) {
   return dt.slice(0, 16);
@@ -521,10 +576,12 @@ function save_service() {
     company_name,
     service_title,
     service_address,
-    next_run,
+    next_run: timeConversion24Hours(next_run),
     unit,
     frequency,
   };
+
+  console.log("NEXT RUN DATETIME CONVERTED TO 24hrs => ",jso.next_run);
 
   let method = "POST";
   let url = "/services/add.php";
@@ -536,7 +593,7 @@ function save_service() {
       company_name,
       service_title,
       service_address,
-      next_run,
+      next_run: timeConversion24Hours(next_run),
       unit,
       frequency,
       service_id,

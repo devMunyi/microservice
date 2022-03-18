@@ -87,7 +87,7 @@ include_once("../configs/conn.inc");
         //Date and time picker
         $('#datetimepicker2').datetimepicker({
             local: 'en',
-            format: 'YYYY-MM-DD HH:mm'
+            format: 'YYYY-MM-DD hh:mmA'
         });
     </script>
     <script>
