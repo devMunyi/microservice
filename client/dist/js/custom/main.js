@@ -58,13 +58,14 @@ function service_list() {
 
   //default jsonbody
   let jso = {};
+  let totals = 0;
 
   crudaction(jso, "/services/read_all.php" + query, "GET", function (feed) {
     if (feed.success) {
       let data = feed["data"];
       let objLength = data.length;
 
-      let totals = feed.count;
+      totals = feed.count;
       $("#services_total").html(totals);
 
       $('#_alltotal_').val(totals);
@@ -166,6 +167,9 @@ function service_list() {
       $("#service_list").html(row);
     } else {
       //////-------No functionalities found
+      //Update the input  value for total records
+      $('#_alltotal_').val(totals);
+
       $("#service_list").html(
         "<tr><td colspan='5'><i>No Records Found</i></td></tr>"
       );
@@ -515,7 +519,6 @@ function timeConversion12Hours(dt) {
   } else if (intFirstTwo < 12 && intFirstTwo != "00" && timeZeroIndex != 0) {
     mt = mt + "AM";
   } else if (intFirstTwo < 12 && intFirstTwo != "00" && timeZeroIndex == 0) {
-    console.log("WE FOUND ONE HERE");
     mt = mt.replace("0", "") + "AM";
   } else if (intFirstTwo > 12) {
     intFirstTwo -= 12;

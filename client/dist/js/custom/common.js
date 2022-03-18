@@ -68,13 +68,13 @@ function submitBtn(fun) {
   $(".submitbtn").html(
     '<button type="submit" onclick="' +
       fun +
-      '"class="btn btn-success btn-lg">Submit </button>'
+      '"class="btn btn-success btn-md">Submit </button>'
   );
 }
 
 function disabledBtn() {
   $(".submitbtn").html(
-    '<button class="btn btn-success btn-lg" type="button" disabled>' +
+    '<button class="btn btn-success btn-md" type="button" disabled>' +
       '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>' +
       "submitting..." +
       "</button>"
