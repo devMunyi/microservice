@@ -90,5 +90,5 @@
 </section>
 
 <?php
-echo "<div style='display:none;'>" . paging_values_hidden('id > 0', 0, 5, 'next_run_datetime', 'ASC', '', 'service_list', 1, 0) . "</div>";
+echo "<div style='display:none;'>" . paging_values_hidden('id > 0', 0, 20, 'next_run_datetime', 'ASC', '', 'service_list', 1, 0) . "</div>";
 ?>

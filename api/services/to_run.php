@@ -29,7 +29,8 @@ if ($alltotal > 0) {
         curl_setopt($ch, CURLOPT_HEADER, true);    // we want headers
         curl_setopt($ch, CURLOPT_NOBODY, true);    // we don't need body
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0); 
+        curl_setopt($ch, CURLOPT_TIMEOUT, 1000);
         $output = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);

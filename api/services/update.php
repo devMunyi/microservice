@@ -38,7 +38,7 @@
     {
         die(json_encode(array("success" => false, "message" => "Service address is required")));
     }else{
-        $address_exists = checkrowexists('tbl_services',"service_address = '$service_address' AND unit=$unit AND frequency=$frequency AND id != $id");
+        $address_exists = checkrowexists('tbl_services',"service_address = '$service_address' AND unit=$unit AND frequency=$frequency AND company_name = '$company_name' AND id != $id");
         if($address_exists == 1){
             die(json_encode(array("success" => false, "message" => "Oops! Duplicate service address")));
         }
