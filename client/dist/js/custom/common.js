@@ -1,5 +1,6 @@
 function crudaction(jsonbody, url, method = "POST", callback) {
   let server_ = $("#server_").val();
+
   let cleanJson = JSON.stringify(jsonbody);
   $.ajax({
     url: server_ + url,
@@ -64,17 +65,17 @@ function feedback(
   }
 }
 
-function submitBtn(fun) {
+function submitBtn(fun, classStyling = "btn btn-success btn-md") {
   $(".submitbtn").html(
     '<button type="submit" onclick="' +
       fun +
-      '"class="btn btn-success btn-md">Submit </button>'
+      '"class="'+classStyling+'">Submit </button>'
   );
 }
 
-function disabledBtn() {
+function disabledBtn(classStyling="btn btn-success btn-md") {
   $(".submitbtn").html(
-    '<button class="btn btn-success btn-md" type="button" disabled>' +
+    '<button class="'+classStyling+'" type="button" disabled>' +
       '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>' +
       "submitting..." +
       "</button>"

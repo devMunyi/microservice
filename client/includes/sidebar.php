@@ -17,14 +17,14 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a href="index" class="nav-link">
               <i class="nav-icon fa fa-dashboard"></i>
               <p>
                 Dashboard
               </p>
             </a>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a href="services" class="nav-link">
               <i class="nav-icon fa fa-th"></i>
@@ -34,7 +34,7 @@
               </p>
             </a>
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a href="users" class="nav-link">
               <i class="nav-icon fa fa-th"></i>
               <p>
@@ -42,7 +42,7 @@
                 <span class="badge badge-info right pl-0"><span class="pr-1" id="users_total">0</span></span>
               </p>
             </a>
-          </li>
+          </li> -->
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

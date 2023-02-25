@@ -1,1 +1,5 @@
 .idea
+./configs/
+./index.html
+./dates-test.php
+./schema/

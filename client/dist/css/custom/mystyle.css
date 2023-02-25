@@ -7,6 +7,15 @@
    margin-bottom: 50px !important;
 }
 
+.bs {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px !important;
+    background-color: #fff !important;
+}
+
+.login-box .title {
+    font-size: 1.5rem !important;
+}
+
 .card-header{
     background-color: #e3f2fd !important;
     border-top: 4px solid silver;
@@ -29,4 +38,22 @@ small{
 
 .small-box{
     height: 100px !important;
+}
+
+.text-decoration-underline {
+    text-decoration: underline !important;
+}
+
+tr, td{
+    width: 50px !important; /* set a fixed width for the cells */
+    word-wrap: break-word !important; /* wrap the text inside the cells */
+}
+
+.action_btns span {
+    margin-bottom: 4px;
+}
+
+.action_btns .btn {
+    width: 100px;
+    border-radius: 100px;
 }

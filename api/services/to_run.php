@@ -6,17 +6,17 @@ header('Content-Type: application/json');
 include_once("../../php_functions/functions.php");
 include_once("../../configs/conn.inc");
 
-$thisfulldate=date('Y-m-d H:i:s');
-$thisfulldate_=date('Y-m-d H:i');
+$current_fulldate=date('Y-m-d H:i:s');
+$current_fulldate_=date('Y-m-d H:i');
 
-//echo "current datetime => ".$thisfulldate;
-//echo "current datetime without seconds =>".$thisfulldate_;
+//echo "current datetime => ".$current_fulldate;
+//echo "current datetime without seconds =>".$current_fulldate_;
 
 
-$ms = fetchtable("tbl_services", "DATE_FORMAT(next_run_datetime, '%Y-%m-%d %H:%i') = '$thisfulldate_' AND is_executed = 'No' AND status > 0", "id", "DESC", "100", "id, service_title, service_address, last_run_datetime, next_run_datetime, unit, frequency, is_executed");
+$ms = fetchtable("tbl_services", "DATE_FORMAT(next_run_datetime, '%Y-%m-%d %H:%i') = '$current_fulldate_' AND is_executed = 'No' AND status > 0", "id", "DESC", "100", "id, service_title, service_address, last_run_datetime, next_run_datetime, unit, frequency, is_executed, repeated");
 ///----------Paging Option
 
-$alltotal = countotal("tbl_services", "DATE_FORMAT(next_run_datetime, '%Y-%m-%d %H:%i') = '$thisfulldate_' AND is_executed = 'No' AND is_executed = 'No' AND status > 0");
+$alltotal = countotal("tbl_services", "DATE_FORMAT(next_run_datetime, '%Y-%m-%d %H:%i') = '$current_fulldate_' AND is_executed = 'No' AND is_executed = 'No' AND status > 0");
 
 if ($alltotal > 0) {
     //Service array 
@@ -47,7 +47,10 @@ if ($alltotal > 0) {
         addtodb('tbl_logs', $fds, $vals);
 
         //update the availabe services table accordingly 
-        if ($unit == "1" && $frequency > 0) {
+        if ($repeated == 'No') {
+            //update is_executed column to 'Yes'
+            updatedb('tbl_services', "is_executed='Yes', last_run_datetime='$next_run_datetime', next_run_datetime='0000-00-00 00:00'", "id= $id");
+        }elseif ($unit == "1") {
             //update last run time 
             $current_run_datetime = date_create($next_run_datetime);
             $last_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
@@ -58,7 +61,7 @@ if ($alltotal > 0) {
 
             $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
             $update = updatedb('tbl_services',"$updatefds","id= $id");
-        } elseif ($unit == "2" && $frequency > 0) {
+        } elseif ($unit == "2") {
            //update last run time 
            $current_run_datetime = date_create($next_run_datetime);
            $last_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
@@ -69,7 +72,7 @@ if ($alltotal > 0) {
 
            $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
            $update = updatedb('tbl_services',"$updatefds","id= $id");
-        } elseif ($unit == "3" && $frequency > 0) {
+        } elseif ($unit == "3") {
             //update last run time 
             $current_run_datetime = date_create($next_run_datetime);
             $last_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
@@ -80,7 +83,7 @@ if ($alltotal > 0) {
 
             $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
             $update = updatedb('tbl_services',"$updatefds","id= $id");
-        } elseif ($unit == "4" && $frequency > 0) {
+        } elseif ($unit == "4") {
             //update last run time 
             $current_run_datetime = date_create($next_run_datetime);
             $last_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
@@ -92,7 +95,7 @@ if ($alltotal > 0) {
             $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
             $update = updatedb('tbl_services',"$updatefds","id= $id");
 
-        } elseif ($unit == "5" && $frequency > 0) {
+        } elseif ($unit == "5") {
             //update last run time 
             $current_run_datetime = date_create($next_run_datetime);
             $last_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
@@ -103,7 +106,7 @@ if ($alltotal > 0) {
 
             $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
             $update = updatedb('tbl_services',"$updatefds","id= $id");
-        } elseif ($unit == "6" && $frequency > 0) {
+        } elseif ($unit == "6") {
             //update last run time 
             $current_run_datetime = date_create($next_run_datetime);
             $last_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
@@ -114,11 +117,7 @@ if ($alltotal > 0) {
 
             $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
             $update = updatedb('tbl_services',"$updatefds","id= $id");
-        } else {
-            //implies not a repetitive service
-            //update is_executed column to 'Yes'
-            updatedb('tbl_services', "is_executed='Yes'", "id= $id");
-        }
+        } 
 
         $service_item = array(
             "service_title" => $service_title,
@@ -130,10 +129,10 @@ if ($alltotal > 0) {
         array_push($services_arr["data"], $service_item);
     }
     //Turn to JSON & output 
-    echo json_encode($services_arr);
+    exit(json_encode($services_arr));
 } else {
-    echo json_encode(
+    exit(json_encode(
         array("success" => false, "message" => "No service found")
-    );
+    ));
 }
 ?>

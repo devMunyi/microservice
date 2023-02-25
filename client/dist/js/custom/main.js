@@ -1,4 +1,17 @@
 ///////////-------Begin Services
+
+//Reusable function to format datetime
+function formatDateTime(datetime) {
+  let fancyDateTime;
+  if (datetime != "0000-00-00 00:00") {
+    fancyDateTime = momentDatetime(datetime);
+  } else {
+    fancyDateTime = "";
+  }
+  return fancyDateTime;
+}
+
+
 function service_list() {
   //add a loading spinner to list body
   $("#service_list").html(
@@ -80,6 +93,7 @@ function service_list() {
         let next_run_datetime = data[i].next_run_datetime;
         let unit = data[i].unit;
         let frequency = data[i].frequency;
+        let repeated = data[i].repeated;
         let status = data[i].status;
 
         let statusView = "";
@@ -89,16 +103,13 @@ function service_list() {
         last_run_datetime = sliceDatetime(last_run_datetime);
         next_run_datetime = sliceDatetime(next_run_datetime);
 
-        let fancyNextRunDatetime;
-        fancyNextRunDatetime = momentDatetime(next_run_datetime);
-
-        let fancyLastRunDatetime;
-        if (last_run_datetime != "0000-00-00 00:00") {
-          fancyLastRunDatetime = momentDatetime(last_run_datetime);
-        } else {
-          fancyLastRunDatetime = "";
+        //Usage example
+        let fancyNextRunDatetime = formatDateTime(next_run_datetime);
+        if (next_run_datetime == "0000-00-00 00:00") {
+          next_run_datetime = "N/A";
         }
-        //console.log("Human friendly datetime => ", momentDatetime("2022-03-17 06:00"));
+
+        let fancyLastRunDatetime = formatDateTime(last_run_datetime);
         if (last_run_datetime == "0000-00-00 00:00") {
           last_run_datetime = "N/A";
         }
@@ -110,10 +121,10 @@ function service_list() {
           actionView =
             '<span><a href="javascript:void(0)" onclick="deleteService(' +
             id +
-            ')"><span style="color:white;" class="btn btn-sm btn-danger fa fa-times"> Delete</span></a></span>';
+            ')"><span style="color:white;" class="btn btn-sm btn-danger fa fa-times"> Block</span></a></span>';
         } else {
           statusView =
-            '<span class="badge badge-pill badge-danger">Deleted</span>';
+            '<span class="badge badge-pill badge-danger">Blocked</span>';
           actionView =
             '<span><a href="javascript:void(0)" onclick="activateService(' +
             id +
@@ -151,9 +162,12 @@ function service_list() {
           frequency +
           "</td>\n" +
           "<td>" +
-          statusView +
+          repeated +
           "</td>\n" +
           "<td>" +
+          statusView +
+          "</td>\n" +
+          "<td class='action_btns'>" +
           '<span><a href="?service=' +
           id +
           '"><span class="btn btn-sm btn-default fa fa-eye"> View</span></a></span>&nbsp;&nbsp;' +
@@ -180,7 +194,6 @@ function service_list() {
     pager_refactor();
   }, 500);
 }
-
 
 //customer list filters
 function service_filters() {
@@ -225,7 +238,7 @@ function isExecuted(isexc) {
 
 function getServiceById() {
   //show loader
-  $("#nav-details").html(
+  $("#service-details_table").html(
     '<div class="row d-flex justify-content-center align-items-center">' +
       '<div class="col-md-6"></div>' +
       '<div class="col-md-6">' +
@@ -236,6 +249,18 @@ function getServiceById() {
       "</div>"
   );
 
+  $("#service-update_btn").html(
+    '<div class="row d-flex justify-content-center align-items-center">' +
+      '<div class="col-md-6"></div>' +
+      '<div class="col-md-6">' +
+      '<div class="spinner-border" role="status">' +
+      '<span class="sr-only">Loading...</span>' +
+      "</div>" +
+      "</div>" +
+      "</div>"
+  );
+
+
   let service_id = $("#service_").val();
 
   let jso = {};
@@ -243,22 +268,25 @@ function getServiceById() {
 
   crudaction(jso, "/services/read_one.php" + query, "GET", function (feed) {
     let data = feed["data"];
-    let row = "";
+
+    console.log("FEED => ", data)
 
     if (data) {
-      let id = data.id;
-      let service_title = data.service_title;
-      let company_name = data.company_name;
-      let address = data.service_address;
-      let last_run_datetime = data.last_run_datetime;
-      let next_run_datetime = data.next_run_datetime;
-      let unit = data.unit;
-      let frequency = data.frequency;
-      let status = data.status;
-      let added_date = data.added_at;
+      let {
+        id,
+        service_title,
+        company_name,
+        service_address,
+        last_run_datetime,
+        next_run_datetime,
+        unit,
+        frequency,
+        status,
+        added_at,
+        added_by
+      } = data
 
       let statusView = "";
-      let actionView = "";
 
       last_run_datetime = sliceDatetime(last_run_datetime);
       next_run_datetime = sliceDatetime(next_run_datetime);
@@ -295,11 +323,7 @@ function getServiceById() {
 
       $(".service_name").html("Details");
 
-      row +=
-        '<div class="row">\n' +
-        '<div class="col-md-7">\n' +
-        "<h3>Primary Details</h3>\n" +
-        '<table class="table-bordered font-14 table table-hover">\n' +
+      const t_rows =
         "<tr>\n" +
         "<td>ID</td>\n" +
         "<td>" +
@@ -314,8 +338,8 @@ function getServiceById() {
         "</tr>\n" +
         "<tr>\n" +
         "<td>Address</td>\n" +
-        "<td>" +
-        address +
+        "<td style='max-width:100px; word-oveflow: break-word; word-wrap: break-word;'>" +
+        service_address +
         "</td>\n" +
         "</tr>\n" +
         "<tr>\n" +
@@ -357,13 +381,13 @@ function getServiceById() {
         "<tr>\n" +
         "<td>Added By</td>\n" +
         "<td>" +
-        1 +
+        added_by +
         "</td>\n" +
         "</tr>\n" +
         "<tr>\n" +
         "<td>Added Date</td>\n" +
         "<td>" +
-        sliceDatetime(added_date) +
+        sliceDatetime(added_at) +
         "</td>\n" +
         "</tr>\n" +
         "<tr>\n" +
@@ -371,25 +395,24 @@ function getServiceById() {
         "<td>" +
         statusView +
         "</td>\n" +
-        "</tr>\n" +
-        "</table>\n" +
-        "</div>\n" +
-        '<div class="col-md-2">\n' +
-        "</div>\n" +
-        '<div class="col-md-3">\n' +
-        '<table class="table">\n' +
-        "<tr>\n" +
+        "</tr>";
+
+        $("#service-details_table").html(t_rows)
+  
+        const service_update_btn = "<tr>\n" +
         '<td><a href="services?service-add-edit=' +
         id +
         '" class="btn btn-warning btn-block btn-md grid-width-8"><i class="fa fa-pencil"> Update</i></a></td>' +
         "</tr>";
-      "</table>\n" + "</div>\n" + "</div>";
-      $("#nav-details").html(row);
+
+      $("#service-update_btn").html(service_update_btn);
     } else {
       //////-------No services found
-      $("#nav-details").html(
+      $("#service-details_table").html(
         "<tr><td colspan='5'><i>No Records Found</i></td></tr>"
       );
+
+      $("#service-update_btn").html('');
     }
   });
 }
@@ -535,13 +558,14 @@ function timeConversion12Hours(dt) {
 
 
 function sliceDatetime(dt) {
-  return dt.slice(0, 16);
+  return dt?.slice(0, 16);
 }
 
 function deleteService(service_id) {
   const answer = window.confirm("Are you sure?");
   if (!answer) return;
-  let jso = { service_id };
+  const service_creator_editor = parseInt($("#service_creator_editor_id").val())
+  let jso = { service_id, service_creator_editor };
 
   crudaction(jso, "/services/delete.php", "DELETE", function (result) {
     if (result.success) {
@@ -553,7 +577,8 @@ function deleteService(service_id) {
 function activateService(service_id) {
   const answer = window.confirm("Are you sure?");
   if (!answer) return;
-  let jso = { service_id };
+  const service_creator_editor = parseInt($("#service_creator_editor_id").val())
+  let jso = { service_id, service_creator_editor };
 
   crudaction(jso, "/services/activate.php", "PUT", function (result) {
     if (result.success) {
@@ -567,24 +592,29 @@ function save_service() {
   disabledBtn();
 
   let service_id = parseInt($("#service_edit_id").val());
-  let company_name = $("#company_name").val();
+  let company_id = $("#company_id").val();
   let service_title = $("#service_title").val();
+  let service_creator_editor_id = parseInt($("#service_creator_editor_id").val())
 
   let service_address = $("#service_address").val();
   let next_run = $("#next_run").val();
 
   let unit = $("#unit").val();
   let frequency = $("#frequency").val();
+  const repeated = $("#repeated").val();
+  const is_executed = $("#is_executed").val()
+
   let jso = {
-    company_name,
+    company_id,
     service_title,
     service_address,
     next_run: timeConversion24Hours(next_run),
     unit,
     frequency,
+    service_creator_editor: service_creator_editor_id,
+    repeated
   };
 
-  console.log("NEXT RUN DATETIME CONVERTED TO 24hrs => ",jso.next_run);
 
   let method = "POST";
   let url = "/services/add.php";
@@ -593,13 +623,16 @@ function save_service() {
     method = "PUT";
     url = "/services/update.php";
     jso = {
-      company_name,
+      company_id,
       service_title,
       service_address,
       next_run: timeConversion24Hours(next_run),
       unit,
       frequency,
       service_id,
+      service_creator_editor: service_creator_editor_id,
+      repeated,
+      is_executed
     };
   }
 
@@ -626,9 +659,6 @@ function save_service() {
         color: "white",
       });
 
-      setTimeout(function () {
-        $("#feedback").html("");
-      }, 4000);
     } else if (feed["success"] === true) {
       let message = feed["message"];
 
@@ -644,10 +674,6 @@ function save_service() {
         icon: "success",
         title: message,
       });
-
-      setTimeout(function () {
-        $("#feedback").html("");
-      }, 4000);
     }
   });
 }
@@ -894,7 +920,7 @@ function loadSubfunById() {
 
         row +=
           '<div class="row">\n' +
-          '<div class="col-md-7">\n' +
+          '<div class="col-md-7 table-responsive">\n' +
           "<h3>Primary Details</h3>\n" +
           '<table class="table-bordered font-14 table table-hover">\n' +
           "<tr>\n" +

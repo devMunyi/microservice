@@ -55,6 +55,13 @@
 
 
 <!--Custom Js-->
-<script src="dist/js/custom/authentication.js"></script>
-<script src="dist/js/custom/common.js"></script>
-<script src="dist/js/custom/main.js"></script>
+<script src="dist/js/custom/authentication.js?v2"></script>
+<script src="dist/js/custom/common.js?v2"></script>
+<script src="dist/js/custom/main.js?v2"></script>
+
+<?php
+  $server = "https://backgen.net/microservice/api";
+  // $server = "http://localhost/microservice/api";
+?>
+<input type="hidden" id="server_" value="<?php echo $server; ?>">
+<input type="hidden" id="auth_" value="Basic dGVzdDp0ZXN0"/>

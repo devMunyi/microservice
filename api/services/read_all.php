@@ -30,7 +30,7 @@ if($company_count > 0){
         array_push($company_array, $company_id);
     }
     $service_company_list = implode(", ", $company_array);
-    $orservicecompany = " OR `company_name` IN ($service_company_list)";
+    $orservicecompany = " OR `company_id` IN ($service_company_list)";
 }
 
 //unit name lookup
@@ -67,7 +67,7 @@ if ((input_available($search)) == 1) {
     $andsearch = "";
 }
 
-$ms = fetchtable('tbl_services', "$where $andsearch", "$orderby", "$dir", "$limit", "id, company_name, service_title, last_run_datetime, next_run_datetime, unit, frequency, added_at, status");
+$ms = fetchtable('tbl_services', "$where $andsearch", "$orderby", "$dir", "$limit", "id, company_id, service_title, last_run_datetime, next_run_datetime, unit, frequency, repeated, added_at, status");
 
 ///----------Paging Option
 $alltotal = countotal("tbl_services", "$where $andsearch");
@@ -79,7 +79,8 @@ if ($alltotal > 0) {
 
     while ($row = mysqli_fetch_array($ms)) {
         extract($row);
-        $company_name_ = fetchrow('tbl_companies', "id='" . $company_name . "'", "name");
+        $company_name_ = fetchrow('tbl_companies', "id='" . $company_id . "'", "name");
+        
         $unit_ = fetchrow('tbl_units', "id='" . $unit . "'", "name");
         $service_item = array(
             "id" => $id,
@@ -89,6 +90,7 @@ if ($alltotal > 0) {
             "next_run_datetime" => $next_run_datetime,
             "unit" => $unit_,
             "frequency" => $frequency,
+            "repeated" => $repeated,
             "added_at" => $added_at,
             "status" => $status,
         );
@@ -97,11 +99,11 @@ if ($alltotal > 0) {
         array_push($services_arr["data"], $service_item);
     }
     //Turn to JSON & output 
-    echo json_encode($services_arr);
+    exit(json_encode($services_arr));
 } else {
-    echo json_encode(
+    exit(json_encode(
         array("success" => false, "message" => "No service found")
-    );
+    ));
 }
 
 ?>

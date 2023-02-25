@@ -1,7 +1,7 @@
 <?php
 session_start();
-include_once("../php_functions/functions.php");
 include_once("../configs/conn.inc");
+include_once("../php_functions/functions.php");
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +41,7 @@ include_once("../configs/conn.inc");
             <section class="content">
                 <?php
                 if (isset($_GET['service'])) {
-                    $details = "details";
+                    $display = "service";
                 ?>
                     <div class="_details">
                         <?php
@@ -50,7 +50,7 @@ include_once("../configs/conn.inc");
                     </div>
                 <?php
                 } elseif (isset($_GET['service-add-edit'])) {
-                    $btn = "show";
+                    $display = "service-add-edit";
                 ?>
                     <div class="_form">
                         <?php
@@ -59,7 +59,9 @@ include_once("../configs/conn.inc");
                     </div>
                 <?php
                 } else {
+                    $display = "service-list";
                 ?>
+
                     <div class="_list">
                         <?php
                         include_once("widgets/service-list.php");
@@ -92,20 +94,19 @@ include_once("../configs/conn.inc");
     </script>
     <script>
         $(document).ready(function() {
+            const display = "<?php echo $display; ?>";
             footer_date();
-            service_list(); /////Load services
-            pager('#service-table');
 
-            let showBtn = "<?php echo $btn; ?>";
-            if (showBtn == "show") {
-                submitBtn('save_service()');
+            if (display === "service-list") {
+                service_list(); /////Load services
+                pager('#service-table');
             }
 
-            //grab the php value of details to call getServiceById() function conditionally 
-            let details = "<?php echo $details; ?>";
-            // console.log("VALUE OF details =>" + details);
-            // console.log("TYPE OF details =>" + typeof details);
-            if (details === "details") {
+            if(display === 'service-add-edit'){
+                submitBtn('save_service()')
+            }
+
+            if (display === "service") {
                 getServiceById();
                 getLogsByServiceId();
             }

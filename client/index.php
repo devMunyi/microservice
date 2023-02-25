@@ -3,6 +3,7 @@
 
 <head>
   <?php
+  session_start();
   include_once("includes/header-includes.php")
   ?>
 </head>

@@ -33,7 +33,26 @@
                 </nav>
                 <!-- Tab panes -->
                 <div class="tab-content pt-3 pl-2" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="nav-details" role="tabpanel" aria-labelledby="nav-details-tab">...</div>
+                    <div class="tab-pane fade show active" id="nav-details" role="tabpanel" aria-labelledby="nav-details-tab">
+                        <h3>Primary Details</h3>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div>
+                                    <table class="table table-bordered table-condensed table-striped" id="service-details_table">
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+
+                            </div>
+                            <div class="col-md-3">
+                                <div class="service-update_btn">
+                                    <table class="table" id="service-update_btn">
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="tab-pane fade" id="nav-logs" role="tabpanel" aria-labelledby="nav-logs-tab">
                         <div class="row">

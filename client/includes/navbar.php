@@ -1,3 +1,7 @@
+<?php
+  include_once ("../php_functions/authenticator.php")
+?>
+
 <nav class="main-header navbar navbar-expand navbar-light pt-1 pb-1" style="background-color: royalblue; color: white;">
   <!-- Left navbar links -->
   <ul class="navbar-nav">
@@ -10,7 +14,7 @@
   <!-- Right navbar links -->
   <ul class="navbar-nav ml-auto">
     <!-- Notifications Dropdown Menu -->
-    <li class="nav-item dropdown">
+    <!-- <li class="nav-item dropdown">
       <a style="color:white" class="nav-link" data-toggle="dropdown" href="#">
         <i class="far fa-bell"></i>
         <span class="badge badge-warning navbar-badge">15</span>
@@ -35,18 +39,18 @@
         <div class="dropdown-divider"></div>
         <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
       </div>
-    </li>
+    </li> -->
 
     <!--User account-->
     <li class="nav-item dropdown">
       <button style="color:white" class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
-        <i class="fa fa-user"></i> Admin
+        <i class="fa fa-user"></i> <?php echo $userd['name'] != null ? $userd['name'] : ''  ?>
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="profile">
+        <!-- <a class="dropdown-item" href="profile">
           Profile
-        </a>
-        <a class="dropdown-item" href="#">
+        </a> -->
+        <a class="dropdown-item" href="#" onclick="logout()">
           Logout
         </a>
       </div>

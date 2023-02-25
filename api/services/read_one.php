@@ -20,7 +20,8 @@ if ($alltotal == 1) {
     $service_arr = array("success" => true, "count" => $alltotal);
     extract($ms);
 
-    $company_name_ = fetchrow('tbl_companies', "id='" . $company_name . "'", "name");
+    $company_name_ = fetchrow('tbl_companies', "id='" . $company_id . "'", "name");
+    $added_by_ = fetchrow('tbl_users', "id='" . $added_by . "'", "name");
     $unit_ = fetchrow('tbl_units', "id='" . $unit . "'", "name");
     $service_item = array(
         "id" => $id,
@@ -31,6 +32,7 @@ if ($alltotal == 1) {
         "next_run_datetime" => $next_run_datetime,
         "unit" => $unit_,
         "frequency" => $frequency,
+        "added_by" => $added_by_,
         "added_at" => $added_at,
         "status" => $status,
     );
@@ -38,10 +40,10 @@ if ($alltotal == 1) {
     $service_arr["data"] = $service_item;
 
     //Turn to JSON & output 
-    echo json_encode($service_arr);
+    exit(json_encode($service_arr));
 } else {
-    echo json_encode(
+    exit(json_encode(
         array("success" => false, "message" => "No service found")
-    );
+    ));
 }
 ?>

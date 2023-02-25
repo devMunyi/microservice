@@ -30,9 +30,11 @@
                                 </select>
 
                                 <select class="btn font-16 btn-md btn-default text-bold top-select" id="sel_company" onchange="service_filters()">
-                                    <option value="0">All Companies</option>
+                                    <option value="0">Company</option>
                                     <?php
-                                    $tbl_companies_ = fetchtable('tbl_companies',"status > 0", "name", "asc", "0,25", "id ,name ");
+                                    $user_details = session_details();
+                                    // $user_company = $user_details['company_id'];
+                                    $tbl_companies_ = fetchtable('tbl_companies',"status > 0", "name", "asc", "0,10", "id ,name ");
                                     while($w = mysqli_fetch_array($tbl_companies_))
                                     {
                                         $id = $w['id'];
@@ -45,7 +47,7 @@
 
                         </div>
                         <div class="col-md-2">
-                            <a class="btn btn-success float-right" href="?service-add-edit"><i class="fa fa-plus"></i> ADD NEW</a>
+                            <a class="btn btn-success btn-sm float-right" href="?service-add-edit"><i class="fa fa-plus"></i> ADD NEW</a>
                         </div>
                     </div>
                 </div>
@@ -60,6 +62,7 @@
                                 <th>Next Run</th>
                                 <th>Unit</th>
                                 <th>Frequency</th>
+                                <th>Repeated</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -75,6 +78,7 @@
                                 <th>Next Run</th>
                                 <th>Unit</th>
                                 <th>Frequency</th>
+                                <th>Repeated</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -90,5 +94,5 @@
 </section>
 
 <?php
-echo "<div style='display:none;'>" . paging_values_hidden('id > 0', 0, 20, 'next_run_datetime', 'ASC', '', 'service_list', 1, 0) . "</div>";
+echo "<div style='display: none;'>" . paging_values_hidden('id > 0', 0, 10, 'next_run_datetime', 'ASC', '', 'service_list', 1, 0) . "</div>";
 ?>

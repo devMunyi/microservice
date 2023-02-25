@@ -1,3 +1,12 @@
+<?php
+    $user_details = session_details();
+    if($user_details == null){
+        echo "<meta http-equiv=\"refresh\" content= \"0, URL=login\" />";
+        die("Your session is invalid");
+        // exit(json_encode(array("success" => false, "message" => "Your session is invalid. Please re-login")));
+    }
+?>
+
 <div class="content-header pb-0">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -7,8 +16,7 @@
                     $service_id = $_GET['service-add-edit'];
                     if ($service_id > 0) {
                         $service_id = $_GET['service-add-edit'];
-                        $service = fetchonerow('tbl_services', "id='" . $service_id . "'", "id, company_name, service_title, service_address, next_run_datetime, unit, frequency");
-
+                        $service = fetchonerow('tbl_services', "id='" . $service_id . "'", "id, company_id, service_title, service_address, next_run_datetime, unit, frequency, repeated, is_executed");
                         $act = "<span class='text-orange'><i class='fa fa-edit'></i>Edit</span>";
                         echo "Service <small class='xsm'>Edit</small> <span class='text-green text-bold sm'>address</span> <a title='View details' class='font-16' href=\"services?service=$service_id\"><i class='fa fa-arrow-circle-up'></i></a>";
                     } else {
@@ -56,16 +64,16 @@
                         <form onsubmit="return false;" class="form-horizontal" method="post">
                             <div class="box-body">
                             <div class="form-group row">
-                                    <label for="Company name" class="col-sm-3 control-label pr-0">Company Name</label>
+                                    <label for="Company" class="col-sm-3 control-label pr-0">Company Name</label>
                                     <div class="col-sm-9">
-                                        <select class="form-control" id="company_name">
+                                        <select class="form-control" id="company_id">
                                             <option value="0">--Select One</option>
                                             <?php
                                             $recs = fetchtable('tbl_companies', "status > 0", "id", "asc", "25", "id ,name");
                                             while ($r = mysqli_fetch_array($recs)) {
                                                 $id = $r['id'];
                                                 $company = $r['name'];
-                                                if ($id ==  $service['company_name']) {
+                                                if ($id ==  $service['company_id']) {
                                                     $g_selected = 'SELECTED';
                                                 } else {
                                                     $g_selected = "";
@@ -92,6 +100,36 @@
                                         <input class="form-control" type="text" name="service_address" id="service_address" value="<?php echo $service['service_address']; ?> ">
                                     </div>
                                 </div>
+                                
+                                <?php if ($service_id > 0) { ?>
+                                    <div class="form-group row">
+                                        <label for="is_executed" class="col-sm-3 control-label pr-0">Is Executed</label>
+                                        <div class="col-sm-9">
+                                            <select class="form-control" id="is_executed">
+                                                <option value="0">--Select One</option>
+                                                <?php
+                                                $recs = array("Yes", "No");
+                                                $count = count($recs);
+
+                                                $i = 0;
+                                                while($i < $count) {                                                                                
+                                                    $value = $recs[$i];
+
+                                                    if ($value == $service['is_executed']) {
+                                                        
+                                                        $s_selected = 'SELECTED';
+                                                    } else {
+                                                        $s_selected = "";
+                                                    }
+                                                    echo "<option $s_selected value=\"$value\">$value</option>";
+
+                                                    $i++;
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                <?php } ?>
 
                                 <div class="form-group row">
                                     <label for="next_run" class="col-sm-3 control-label pr-0">Next Run</label>
@@ -149,6 +187,33 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row">
+                                    <label for="repeated" class="col-sm-3 control-label pr-0">Repeated</label>
+                                    <div class="col-sm-9">
+                                        <select class="form-control" id="repeated">
+                                            <option value="0">--Select One</option>
+                                            <?php
+                                            $recs = array("Yes", "No");
+                                            $count = count($recs);
+
+                                            $i = 0;
+                                            while($i < $count) {                                                                                
+                                                $value = $recs[$i];
+
+                                                if ($value == $service['repeated']) {
+                                                    
+                                                    $s_selected = 'SELECTED';
+                                                } else {
+                                                    $s_selected = "";
+                                                }
+                                                echo "<option $s_selected value=\"$value\">$value</option>";
+
+                                                $i++;
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
 
                                 <div class="form-group row">
                                     <div class="col-sm-3"></div>

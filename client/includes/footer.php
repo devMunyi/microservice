@@ -4,10 +4,5 @@
       <b>Version</b> 3.2.0
     </div>
 </footer>
-<?php
-  $server = "https://backgen.net/microservice/api";
-  //$server = "http://localhost/microservice/api";
-?>
-<input type="hidden" id="server_" value="<?php echo $server; ?>">
-<input type="hidden" id="auth_" value="Basic dGVzdDp0ZXN0"/>
-
+ <!-- logged in user id-->
+ <input type="hidden" name="editor_creator_id" id="service_creator_editor_id" value="<?php echo $userd['id'] != null ? $userd['id'] : ''  ?>">
