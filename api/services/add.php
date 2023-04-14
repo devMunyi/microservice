@@ -52,13 +52,12 @@
         }
     }
 
-    $thisfulldate_=date('Y-m-d H:i');
     if((input_available($next_run_datetime)) == 0)
     {
         exit(json_encode(array("success" => false, "message" => "The next run date and time is required"))); 
-    }else if($next_run_datetime <= $thisfulldate_)
+    }else if($next_run_datetime <= $current_fulldate)
     {
-        exit(json_encode(array("success" => false, "message" => "The next run must be greater than ".$thisfulldate_))); 
+        exit(json_encode(array("success" => false, "message" => "The next run must be greater than ".timeConversion12Hours($current_fulldate)))); 
     }
     else{
         if((input_length($next_run_datetime, 16)) == 0){
