@@ -3,7 +3,7 @@
 //Reusable function to format datetime
 function formatDateTime(datetime) {
   let fancyDateTime;
-  if (datetime != "0000-00-00 00:00") {
+  if (datetime != "0000-00-00 00:00:00") {
     fancyDateTime = momentDatetime(datetime);
   } else {
     fancyDateTime = "";
@@ -15,16 +15,14 @@ function formatDateTime(datetime) {
 function service_list() {
   //add a loading spinner to list body
   $("#service_list").html(
-    '<div class="row pt-5 pb-5">' +
-      '<div class="col-md-6"></div>' +
-      '<div class="col-md-6 d-flex justify-content-center align-items-center">' +
-      '<div class="spinner-border" role="status">' +
-      '<span class="sr-only">Loading...</span>' +
-      "</div>" +
-      "</div>" +
-      "</div>"
+      '<tr><td colspan="9">' +
+        '<div class="list_loader">' +
+          '<div class="spinner-border" role="status">' +
+            '<span class="sr-only">Loading...</span>' +
+          '</div>' +
+        '</div>' +
+      '</td></tr>'
   );
-
   
   let where_ = $("#_where_").val();
   if (!where_) {
@@ -105,12 +103,12 @@ function service_list() {
 
         //Usage example
         let fancyNextRunDatetime = formatDateTime(next_run_datetime);
-        if (next_run_datetime == "0000-00-00 00:00") {
+        if (next_run_datetime == "0000-00-00 00:00:00") {
           next_run_datetime = "N/A";
         }
 
         let fancyLastRunDatetime = formatDateTime(last_run_datetime);
-        if (last_run_datetime == "0000-00-00 00:00") {
+        if (last_run_datetime == "0000-00-00 00:00:00") {
           last_run_datetime = "N/A";
         }
 
@@ -185,7 +183,7 @@ function service_list() {
       $('#_alltotal_').val(totals);
 
       $("#service_list").html(
-        "<tr><td colspan='8'><i>No Records Found</i></td></tr>"
+        "<tr><td colspan='9'><i>No Records Found</i></td></tr>"
       );
     }
   });
@@ -223,6 +221,7 @@ function service_filters() {
 
 //friendly datetime formatter
 function momentDatetime(targetdt) {
+  console.log("MOMENT TARGET DATE => ", targetdt);
   return moment(targetdt).fromNow();
 }
 
@@ -295,13 +294,14 @@ function getServiceById() {
       fancyNextRunDatetime = momentDatetime(next_run_datetime);
 
       let fancyLastRunDatetime;
-      if (last_run_datetime != "0000-00-00 00:00") {
+      if (last_run_datetime != "0000-00-00 00:00:00") {
+        console.log("ABOUT TO FANCY => ", fancyLastRunDatetime)
         fancyLastRunDatetime = momentDatetime(last_run_datetime);
       } else {
         fancyLastRunDatetime = "";
       }
       //console.log("Human friendly datetime => ", momentDatetime("2022-03-17 06:00"));
-      if (last_run_datetime == "0000-00-00 00:00") {
+      if (last_run_datetime == "0000-00-00 00:00:00") {
         last_run_datetime = "N/A";
       }
 
@@ -468,7 +468,7 @@ function getLogsByServiceId() {
           let logged_date = data[i].logged_date;
           logged_date = sliceDatetime(logged_date);
 
-          if (log != "Success") {
+          if (log.indexOf("Success") === -1) {
             logView = '<span class="text-danger">' + log + "</span>";
           }
 
@@ -498,10 +498,11 @@ function getLogsByServiceId() {
 
 function timeConversion24Hours(dt) {
   //slice time for conversion
-  let ot = dt.slice(11, 18);
-  let mt = dt.slice(11, 18);
+  let ot = dt.slice(11, 21);
+  let mt = dt.slice(11, 21);
 
   let lastTwo = mt.slice(-2);
+
   let firstTwo = mt.slice(0, 2);
   let intFirstTwo = parseInt(firstTwo);
 
@@ -526,8 +527,8 @@ function timeConversion24Hours(dt) {
 
 function timeConversion12Hours(dt) {
   //slice time for conversion
-  let ot = dt.slice(11, 16);
-  let mt = dt.slice(11, 16);
+  let ot = dt.slice(11, 21);
+  let mt = dt.slice(11, 21);
 
   /* let lastTwo = mt.slice(-2); */
   let firstTwo = mt.slice(0, 2);
@@ -558,7 +559,7 @@ function timeConversion12Hours(dt) {
 
 
 function sliceDatetime(dt) {
-  return dt?.slice(0, 16);
+  return dt?.slice(0, 19);
 }
 
 function deleteService(service_id) {

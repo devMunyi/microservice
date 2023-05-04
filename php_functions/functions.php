@@ -53,6 +53,69 @@ function session_details()
     return $userd;
 }
 
+function timeConversion24Hours($dt) {
+    //slice time for conversion
+    $ot = substr($dt, 11, 9);
+    $mt = substr($dt, 11, 9);
+  
+    $lastTwo = substr($mt, -2);
+  
+    $firstTwo = substr($mt, 0, 2);
+    $intFirstTwo = intval($firstTwo);
+  
+    if ($lastTwo == "PM" && $intFirstTwo < 12) {
+        $intFirstTwo += 12;
+        $mt = str_replace($firstTwo, $intFirstTwo, $mt);
+        $mt = str_replace($lastTwo, "", $mt);
+    } else if ($lastTwo == "PM" && $intFirstTwo >= 12) {
+        $mt = str_replace($lastTwo, "", $mt);
+    } else if ($lastTwo == "AM" && $intFirstTwo < 12) {
+        $mt = str_replace($lastTwo, "", $mt);
+    } else {
+        if ($lastTwo == "AM" && $intFirstTwo == 12) {
+            $intFirstTwo -= 12;
+            $mt = str_replace($lastTwo, "", $mt);
+            $mt = str_replace($firstTwo, "0" . $intFirstTwo, $mt);
+        }
+    }
+  
+    $dt = str_replace($ot, $mt, $dt);
+    return $dt;
+}
+  
+
+function timeConversion12Hours($dt) {
+    //slice time for conversion
+    $ot = substr($dt, 11, 8);
+    $mt = substr($dt, 11, 8);
+  
+    /* $lastTwo = substr($mt, -2); */
+    $firstTwo = substr($mt, 0, 2);
+    $intFirstTwo = (int) $firstTwo;
+    $timeZeroIndex = substr($mt, 0, 1);
+  
+    /* echo "ZERO INDEX VALUE IS => ".$timeZeroIndex; */
+  
+    if ($intFirstTwo == 0) {
+      $intFirstTwo += 12;
+      $mt = str_replace($firstTwo, $intFirstTwo, $mt) . "AM";
+    } else if ($intFirstTwo < 12 && $intFirstTwo != 0 && $timeZeroIndex != 0) {
+      $mt = $mt . "AM";
+    } else if ($intFirstTwo < 12 && $intFirstTwo != 0 && $timeZeroIndex == 0) {
+      $mt = str_replace("0", "", $mt) . "AM";
+    } else if ($intFirstTwo > 12) {
+      $intFirstTwo -= 12;
+      $mt = str_replace($firstTwo, $intFirstTwo, $mt) . "PM";
+    } else {
+      if ($intFirstTwo == 12) {
+        $mt = $mt . "PM";
+      }
+    }
+  
+    $dt = str_replace($ot, $mt, $dt);
+    return $dt;
+}
+
 function company_settings()
 {
     $company = fetchonerow(

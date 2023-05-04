@@ -1,10 +1,10 @@
-.box{
-   background-color: white !important;
-   margin-left: 20px;
-   margin-right: 20px;
-   box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 5px;
-   border-radius: 5px !important;
-   margin-bottom: 50px !important;
+.box {
+    background-color: white !important;
+    margin-left: 20px;
+    margin-right: 20px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 5px;
+    border-radius: 5px !important;
+    margin-bottom: 50px !important;
 }
 
 .bs {
@@ -16,27 +16,28 @@
     font-size: 1.5rem !important;
 }
 
-.card-header{
+.card-header {
     background-color: #e3f2fd !important;
     border-top: 4px solid silver;
 }
 
-small{
-    font-size: 10px;   
+small {
+    font-size: 10px;
 }
 
-.aco{
+.aco {
     color: black !important
 }
 
-.sm{
+.sm {
     font-size: 18px;
 }
-.xsm{
+
+.xsm {
     font-size: 14px;
 }
 
-.small-box{
+.small-box {
     height: 100px !important;
 }
 
@@ -44,9 +45,12 @@ small{
     text-decoration: underline !important;
 }
 
-tr, td{
-    width: 50px !important; /* set a fixed width for the cells */
-    word-wrap: break-word !important; /* wrap the text inside the cells */
+tr,
+td {
+    width: 50px !important;
+    /* set a fixed width for the cells */
+    word-wrap: break-word !important;
+    /* wrap the text inside the cells */
 }
 
 .action_btns span {
@@ -56,4 +60,11 @@ tr, td{
 .action_btns .btn {
     width: 100px;
     border-radius: 100px;
+}
+
+.list_loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
 }

@@ -89,7 +89,7 @@ include_once("../php_functions/functions.php");
         //Date and time picker
         $('#datetimepicker2').datetimepicker({
             local: 'en',
-            format: 'YYYY-MM-DD hh:mmA'
+            format: 'YYYY-MM-DD hh:mm:ssA'
         });
     </script>
     <script>
