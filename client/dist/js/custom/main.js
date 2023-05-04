@@ -15,16 +15,14 @@ function formatDateTime(datetime) {
 function service_list() {
   //add a loading spinner to list body
   $("#service_list").html(
-    '<div class="row pt-5 pb-5">' +
-      '<div class="col-md-6"></div>' +
-      '<div class="col-md-6 d-flex justify-content-center align-items-center">' +
-      '<div class="spinner-border" role="status">' +
-      '<span class="sr-only">Loading...</span>' +
-      "</div>" +
-      "</div>" +
-      "</div>"
+      '<tr><td colspan="9">' +
+        '<div class="list_loader">' +
+          '<div class="spinner-border" role="status">' +
+            '<span class="sr-only">Loading...</span>' +
+          '</div>' +
+        '</div>' +
+      '</td></tr>'
   );
-
   
   let where_ = $("#_where_").val();
   if (!where_) {
@@ -185,7 +183,7 @@ function service_list() {
       $('#_alltotal_').val(totals);
 
       $("#service_list").html(
-        "<tr><td colspan='8'><i>No Records Found</i></td></tr>"
+        "<tr><td colspan='9'><i>No Records Found</i></td></tr>"
       );
     }
   });
