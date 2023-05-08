@@ -63,7 +63,7 @@ if ($alltotal > 0) {
             $last_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
 
             //update next run time
-            date_modify($current_run_datetime, "$frequency seconds");
+            date_modify($current_run_datetime, "$frequency minutes");
             $next_run_datetime =  date_format($current_run_datetime, "Y-m-d H:i:s");
 
             $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
@@ -74,7 +74,7 @@ if ($alltotal > 0) {
             $last_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
 
             //update next run time
-            date_modify($current_run_datetime, "$frequency minutes");
+            date_modify($current_run_datetime, "$frequency hours");
             $next_run_datetime =  date_format($current_run_datetime, "Y-m-d H:i:s");
 
             $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
@@ -85,7 +85,7 @@ if ($alltotal > 0) {
             $last_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
 
             //update next run time
-            date_modify($current_run_datetime, "$frequency hours");
+            date_modify($current_run_datetime, "$frequency days");
             $next_run_datetime =  date_format($current_run_datetime, "Y-m-d H:i:s");
 
             $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
@@ -96,7 +96,7 @@ if ($alltotal > 0) {
             $last_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
 
             //update next run time
-            date_modify($current_run_datetime, "$frequency days");
+            date_modify($current_run_datetime, "$frequency weeks");
             $next_run_datetime =  date_format($current_run_datetime, "Y-m-d H:i:s");
 
             $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
@@ -108,23 +108,12 @@ if ($alltotal > 0) {
             $last_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
 
             //update next run time
-            date_modify($current_run_datetime, "$frequency weeks");
-            $next_run_datetime =  date_format($current_run_datetime, "Y-m-d H:i:s");
-
-            $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
-            $update = updatedb('tbl_services',"$updatefds","id= $id");
-        } elseif ($unit == "6") {
-            //update last run time 
-            $current_run_datetime = date_create($next_run_datetime);
-            $last_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
-
-            //update next run time
             date_modify($current_run_datetime, "$frequency months");
             $next_run_datetime =  date_format($current_run_datetime, "Y-m-d H:i:s");
 
             $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
             $update = updatedb('tbl_services',"$updatefds","id= $id");
-        } elseif ($unit == "7") {
+        } elseif ($unit == "6") {
             //update last run time 
             $current_run_datetime = date_create($next_run_datetime);
             $last_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
