@@ -24,6 +24,6 @@ $thisday = date('d');
 $thisdayname = date('D');
 $thismonth = date('m');
 $thisyear = date('Y');
-$current_fulldate = date('Y-m-d H:i:s');
+$current_fulldate = date('Y-m-d H:i');
 
 ?>
