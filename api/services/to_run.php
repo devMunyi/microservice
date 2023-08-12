@@ -6,10 +6,10 @@ header('Content-Type: application/json');
 include_once("../../php_functions/functions.php");
 include_once("../../configs/conn.inc");
 
-$ms = fetchtable("tbl_services", "next_run_datetime < '$current_fulldate' AND is_executed = 'No' AND status > 0", "id", "DESC", "100", "id, service_title, service_address, last_run_datetime, next_run_datetime, unit, frequency, is_executed, repeated");
+$ms = fetchtable("tbl_services", "next_run_datetime <= '$current_fulldate' AND is_executed = 'No' AND status > 0", "id", "DESC", "100", "id, service_title, service_address, last_run_datetime, next_run_datetime, unit, frequency, is_executed, repeated");
 ///----------Paging Option
 
-$alltotal = countotal("tbl_services", "next_run_datetime < '$current_fulldate' AND is_executed = 'No' AND status > 0");
+$alltotal = countotal("tbl_services", "next_run_datetime <= '$current_fulldate' AND is_executed = 'No' AND status > 0");
 
 
 if ($alltotal > 0) {
