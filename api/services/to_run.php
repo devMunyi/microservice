@@ -37,9 +37,9 @@ if ($alltotal > 0) {
             if ($http_code != null && $execution_time != null) {
                 //check for status code to determined whether failed on executed
                 if ($http_code == "200") {
-                    $log = "Success with an execution time of $execution_time seconds unit: $unit";
+                    $log = "Success with an execution time of $execution_time seconds";
                 } else {
-                    $log = "Failed with code $http_code and execution time of $execution_time seconds unit: $unit";
+                    $log = "Failed with code $http_code and execution time of $execution_time seconds";
                 }
 
                 // store service run logs
