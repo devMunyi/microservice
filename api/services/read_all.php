@@ -13,8 +13,8 @@ $where = isset($_GET["where_"]) ? $_GET["where_"] : 'id > 0';
 $offset = isset($_GET["offset"]) ? $_GET["offset"] : 0;
 $rpp = isset($_GET["rpp"]) ? $_GET["rpp"] : 10;
 //$page_no = isset($_GET["page_no"]) ? $_GET["page_no"] : 1;
-$orderby = isset($_GET["orderby"]) ? $_GET["orderby"] : "next_run_datetime";
-$dir = isset($_GET["dir"]) ? $_GET["dir"] : "ASC";
+$orderby = $_GET["orderby"] ?? "next_run_datetime";
+$dir = $_GET["dir"] ?? "DESC";
 $search = isset($_GET["search"]) ? $_GET["search"] : "";
 
 $limit = "$offset, $rpp";

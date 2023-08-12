@@ -64,13 +64,15 @@ if ($password_valid == 1) {
                     $OS
                 );
 
+                // echo "TOKEN => $token";
+
                 if (strlen($token) == 64) {
                     $details_ = $token;
                     $_SESSION['msu-token'] = $token;
                     exit(json_encode(array("status" => "Ok", "message" => "Success! we are taking you to the dashboard...")));
                     // echo "<meta http-equiv=\"refresh\" content=\"2; URL=index.php\"/>";
                 } else {
-                    exit(json_encode(array("status" => "Failed", "message" => "Unable to generate a security token. Please click login again")));
+                    exit(json_encode(array("status" => "Failed", "message" => "Unable to generate a security token. Please click login again => $token")));
                 }
             } else {
               exit(json_encode(array("status" => "Failed", "message" => "Password mismatch")));

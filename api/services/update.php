@@ -50,7 +50,7 @@
     if((input_available($next_run_datetime)) == 0)
     {
         exit(json_encode(array("success" => false, "message" => "The next run date and time is required"))); 
-    }else if($next_run_datetime <= $current_fulldate)
+    }else if($next_run_datetime <= $current_fulldate && $is_executed != 'Yes')
     {
         exit(json_encode(array("success" => false, "message" => "The next run must be greater than ".timeConversion12Hours($current_fulldate)))); 
     }else{

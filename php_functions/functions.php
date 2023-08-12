@@ -53,16 +53,17 @@ function session_details()
     return $userd;
 }
 
-function timeConversion24Hours($dt) {
+function timeConversion24Hours($dt)
+{
     //slice time for conversion
     $ot = substr($dt, 11, 9);
     $mt = substr($dt, 11, 9);
-  
+
     $lastTwo = substr($mt, -2);
-  
+
     $firstTwo = substr($mt, 0, 2);
     $intFirstTwo = intval($firstTwo);
-  
+
     if ($lastTwo == "PM" && $intFirstTwo < 12) {
         $intFirstTwo += 12;
         $mt = str_replace($firstTwo, $intFirstTwo, $mt);
@@ -78,40 +79,41 @@ function timeConversion24Hours($dt) {
             $mt = str_replace($firstTwo, "0" . $intFirstTwo, $mt);
         }
     }
-  
+
     $dt = str_replace($ot, $mt, $dt);
     return $dt;
 }
-  
 
-function timeConversion12Hours($dt) {
+
+function timeConversion12Hours($dt)
+{
     //slice time for conversion
     $ot = substr($dt, 11, 8);
     $mt = substr($dt, 11, 8);
-  
+
     /* $lastTwo = substr($mt, -2); */
     $firstTwo = substr($mt, 0, 2);
     $intFirstTwo = (int) $firstTwo;
     $timeZeroIndex = substr($mt, 0, 1);
-  
+
     /* echo "ZERO INDEX VALUE IS => ".$timeZeroIndex; */
-  
+
     if ($intFirstTwo == 0) {
-      $intFirstTwo += 12;
-      $mt = str_replace($firstTwo, $intFirstTwo, $mt) . "AM";
+        $intFirstTwo += 12;
+        $mt = str_replace($firstTwo, $intFirstTwo, $mt) . "AM";
     } else if ($intFirstTwo < 12 && $intFirstTwo != 0 && $timeZeroIndex != 0) {
-      $mt = $mt . "AM";
+        $mt = $mt . "AM";
     } else if ($intFirstTwo < 12 && $intFirstTwo != 0 && $timeZeroIndex == 0) {
-      $mt = str_replace("0", "", $mt) . "AM";
+        $mt = str_replace("0", "", $mt) . "AM";
     } else if ($intFirstTwo > 12) {
-      $intFirstTwo -= 12;
-      $mt = str_replace($firstTwo, $intFirstTwo, $mt) . "PM";
+        $intFirstTwo -= 12;
+        $mt = str_replace($firstTwo, $intFirstTwo, $mt) . "PM";
     } else {
-      if ($intFirstTwo == 12) {
-        $mt = $mt . "PM";
-      }
+        if ($intFirstTwo == 12) {
+            $mt = $mt . "PM";
+        }
     }
-  
+
     $dt = str_replace($ot, $mt, $dt);
     return $dt;
 }
@@ -365,10 +367,11 @@ function fetchonerowrich($table, $where, $orderby, $dir, $limit, $fds = '*')
 
 function fetchrandomrow($table, $where)
 {
+    global $con;
     ////##########################################Fetch only one row
     $query = "SELECT * FROM $table WHERE $where order by RAND()"; //var_dump($query);
-    $result = mysql_query($query);
-    $roww = mysql_fetch_array($result);
+    $result = mysqli_query($con, $query);
+    $roww = mysqli_fetch_array($result);
 
     return $roww;
 }
@@ -414,6 +417,7 @@ function checkrowexists($table, $where)
 }
 function searchtable($table, $category, $fields, $tags, $dir, $limit)
 {
+    global $con;
     $query =
         'SELECT * FROM ' .
         $table .
@@ -425,7 +429,7 @@ function searchtable($table, $category, $fields, $tags, $dir, $limit)
         $tags .
         '% LIMIT ' .
         $limit; // var_dump($query);
-    $result = mysql_query($query);
+    $result = mysqli_query($con, $query);
 
     return $result;
 }
@@ -1022,7 +1026,6 @@ function addtodb($tb, $fds, $vals)
 
     if (!mysqli_query($con, $insertq)) {
         return mysqli_error($con);
-        var_dump($e);
     } else {
         return 1;
     }
@@ -1248,8 +1251,8 @@ function accepted_files($x)
 
 function sanitize_url($unsafeurl)
 {
-    $new_url = sanitize_title("$unsafeurl");
-    return $new_url;
+    // $new_url = sanitize_title("$unsafeurl");
+    // return $new_url;
 }
 
 function safehtml($html)
@@ -1575,6 +1578,7 @@ function paging_values_hidden(
     $page_no = 1,
     $records = 0
 ) {
+    $vals = "";
     $vals .= "<input type='text' title='where' id='_where_' value='$where'>";
     $vals .= "<input type='text' title='offset' id='_offset_' value='$offset'>";
     $vals .= "<input type='text' title='rpp' id='_rpp_' value='$rpp'>";
@@ -1598,6 +1602,7 @@ function paging_values_hidden2(
     $sort,
     $page_no = 1
 ) {
+    $vals = "";
     $vals .= "<input type='text' title='where' id='_where_' value='$where'>";
     $vals .= "<input type='text' title='offset' id='_offset_' value='$offset'>";
     $vals .= "<input type='text' title='rpp' id='_rpp_' value='$rpp'>";
@@ -1876,11 +1881,13 @@ function generateToken($userid, $device_id, $browser_name, $IPAddress, $OS)
         '1',
     ];
     $create = addtodb('tbl_tokens', $fds, $vals);
+    // echo json_encode($create);
     if ($create == 1) {
         /// return token
         return $token;
     } else {
-        return 0;
+        return $create;
+        // return 0;
     }
 }
 
@@ -2029,4 +2036,145 @@ function gen_uuidv4()
         mt_rand(0, 0xffff)
     );
 }
-?>
+
+
+function serviceCaller($service_address)
+{
+    $ch = curl_init($service_address);
+    $options = array(
+        CURLOPT_HEADER         => true,
+        CURLOPT_NOBODY         => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CONNECTTIMEOUT => 0,
+        CURLOPT_TIMEOUT        => 10, // set timeout as 10 seconds
+    );
+    curl_setopt_array($ch, $options);
+
+    // Measure the start time
+    $start_time = microtime(true);
+
+    try {
+        $output = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    } catch (Exception $e) {
+        // Handle exceptions
+        $httpcode = 0; // Set to some error code indicating failure
+    } finally {
+        // Measure the end time and calculate the execution time
+        $end_time = microtime(true);
+        $execution_time = $end_time - $start_time;
+
+        // Close the CURL resource
+        curl_close($ch);
+    }
+
+    return array(
+        'http_code' => $httpcode,
+        'execution_time' => $execution_time
+    );
+}
+
+function serviceCall($current_fulldate, $compar_date, $units, $frequency, $service_address)
+{
+    $cur_date_obj = new DateTime($current_fulldate);
+    $compar_date_obj = new DateTime($compar_date);
+
+    $result = array("http_code" => null, "execution_time" => null);
+
+    if ($units == 1) {
+        $interval = $cur_date_obj->diff($compar_date_obj);
+        $totalMinutes = ($interval->days * 24 * 60) + ($interval->h * 60) + $interval->i;
+
+        if ($totalMinutes >= $frequency) {
+            $result = serviceCaller($service_address);
+        }
+    }
+
+    if ($units == 2) {
+        $interval = $cur_date_obj->diff($compar_date_obj);
+        $totalHours = ($interval->days * 24) + $interval->h + ($interval->i / 60);
+
+        if ($totalHours >= $frequency) {
+            $result = serviceCaller($service_address);
+        }
+    }
+
+    if ($units == 3) {
+        $interval = $cur_date_obj->diff($compar_date_obj);
+        $totalDays = $interval->days;
+
+        if ($totalDays >= $frequency) {
+            $result = serviceCaller($service_address);
+        }
+    }
+
+    if ($units == 4) {
+        $interval = $cur_date_obj->diff($compar_date_obj);
+        $totalDays = $interval->days;
+        $totalWeeks = floor($totalDays / 7); // Calculate the number of weeks
+
+        if ($totalWeeks >= $frequency) {
+            $result = serviceCaller($service_address);
+        }
+    }
+
+
+    if ($units == 5) {
+        $interval = $cur_date_obj->diff($compar_date_obj);
+        $totalMonths = $interval->m; // Get the number of months from the interval
+
+        if ($totalMonths >= $frequency) {
+            $result = serviceCaller($service_address);
+        }
+    }
+
+
+    if ($units == 6) {
+        $interval = $cur_date_obj->diff($compar_date_obj);
+        $totalYears = $interval->y; // Get the number of years from the interval
+
+        if ($totalYears >= $frequency) {
+            $result = serviceCaller($service_address);
+        }
+    }
+
+    return $result;
+}
+
+
+function updateService($repeated, $unit, $frequency, $current_fulldate, $id) {
+    $current_run_datetime = date_create($current_fulldate);
+    $last_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
+
+    if ($repeated == 'No') {
+        $next_run_datetime = '0000-00-00 00:00';
+        $updatefds = "is_executed='Yes', last_run_datetime='$next_run_datetime', next_run_datetime='$next_run_datetime'";
+    } elseif ($unit == 1) {
+        $current_run_datetime->modify("+$frequency minutes");
+        $next_run_datetime = $current_run_datetime->format("Y-m-d H:i:s");
+        $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
+    } elseif ($unit == 2) {
+        $current_run_datetime->modify("+$frequency hours");
+        $next_run_datetime = $current_run_datetime->format("Y-m-d H:i:s");
+        $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
+    } elseif ($unit == 3) {
+        $current_run_datetime->modify("+$frequency days");
+        $next_run_datetime = $current_run_datetime->format("Y-m-d H:i:s");
+        $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
+    } elseif ($unit == 4) {
+        date_modify($current_run_datetime, "$frequency weeks");
+        $next_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
+        $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
+    } elseif ($unit == 5) {
+        date_modify($current_run_datetime, "$frequency months");
+        $next_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
+        $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
+    } elseif ($unit == 6) {
+        date_modify($current_run_datetime, "$frequency years");
+        $next_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
+        $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
+    }
+
+    // Call your updatedb function here with the appropriate arguments
+    updatedb('tbl_services', $updatefds, "id=$id");
+}

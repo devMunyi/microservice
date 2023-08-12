@@ -55,7 +55,7 @@ include_once("../configs/conn.inc");
   include_once("includes/footer-includes.php");
 ?>
 <script>
-    submitBtn('login()', class="btn btn-outline-info w-100");
+    submitBtn('login()', "btn btn-outline-info w-100");
 </script>
 </body>
 </html>

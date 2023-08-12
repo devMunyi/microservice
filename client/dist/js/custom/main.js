@@ -31,7 +31,7 @@ function service_list() {
 
   let dir = $("#_dir_").val();
   if (!dir) {
-    dir = "ASC";
+    dir = "DESC";
   }
 
   let orderby = $("#_orderby_").val();
