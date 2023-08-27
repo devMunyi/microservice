@@ -2162,16 +2162,16 @@ function updateService($repeated, $unit, $frequency, $current_fulldate, $id) {
         $next_run_datetime = $current_run_datetime->format("Y-m-d H:i:s");
         $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
     } elseif ($unit == 4) {
-        date_modify($current_run_datetime, "$frequency weeks");
-        $next_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
+        $current_run_datetime->modify("+$frequency weeks");
+        $next_run_datetime = $current_run_datetime->format("Y-m-d H:i:s");
         $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
     } elseif ($unit == 5) {
-        date_modify($current_run_datetime, "$frequency months");
-        $next_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
+        $current_run_datetime->modify("+$frequency months");
+        $next_run_datetime = $current_run_datetime->format("Y-m-d H:i:s");
         $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
     } elseif ($unit == 6) {
-        date_modify($current_run_datetime, "$frequency years");
-        $next_run_datetime = date_format($current_run_datetime, "Y-m-d H:i:s");
+        $current_run_datetime->modify("+$frequency years");
+        $next_run_datetime = $current_run_datetime->format("Y-m-d H:i:s");
         $updatefds = "last_run_datetime='$last_run_datetime', next_run_datetime='$next_run_datetime'";
     }
 
