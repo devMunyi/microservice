@@ -1,5 +1,6 @@
 .idea
-./configs/
-./index.html
-./dates-test.php
+configs/*
+index.html
+dates-test.php
 vendor
+composer.lock
